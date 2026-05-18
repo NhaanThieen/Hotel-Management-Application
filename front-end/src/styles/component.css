@@ -1,0 +1,284 @@
+.text-gold { color: #d4af37 !important; }
+.border-gold { border-color: #d4af37 !important; }
+.price-tag { color: #d4af37; font-weight: bold; font-size: 1.1rem; }
+
+.luxury-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    letter-spacing: 2px;
+}
+
+.glass-panel {
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+.glass-card {
+    background: rgba(20, 20, 20, 0.7) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 12px;
+    color: white;
+    transition: all 0.6s;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                border-color 0.6s ease, 
+                box-shadow 0.6s ease !important;
+}
+
+.glass-card:hover .room-img {
+    transform: scale(1.1); 
+}
+
+.glass-card::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height:100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%,rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100% );
+    transition: left 0.6s ease;
+    z-index: 1;
+}   
+
+.glass-card:hover {
+    transform: translateY(-6px) !important; 
+    border-color:  rgba(212, 175, 55, 0.8) !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 
+                0 0 15px rgba(212, 175, 55, 0.25) !important; 
+}
+
+.glass-card:hover::before { left: 150%; }
+
+.glass-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; 
+    background-color: #d4af37; transition: width 0.6s ease; z-index: 2;
+}
+
+.glass-card:hover::after { width: 100%; }
+
+.room-img { 
+    width: 100%; 
+    height: 130px; 
+    object-fit: cover; 
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.6s ease; 
+}
+.room-img-placeholder { 
+    height: 130px; display: flex; align-items: center; justify-content: center; 
+    font-size: 2.5rem; color: rgba(255,255,255,0.2); 
+}
+
+.btn-gold {
+    background-color: #d4af37 !important; color: #000 !important; font-weight: bold !important;
+    border-radius: 25px !important; border: none !important; transition: all 0.3s !important;
+}
+.btn-gold:hover { background-color: #f1c40f; transform: translateY(-2px); }
+
+.btn-room-dark {
+    background: rgba(255, 255, 255, 0.05) !important; color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important; border-radius: 10px !important;
+    transition: all 0.2s !important;
+}
+.btn-room-dark:hover, .btn-room-dark.active {
+    background: #d4af37 !important; color: black !important; border-color: #d4af37 !important;
+}
+
+.form-control-dark {
+    background-color: transparent; border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0; color: white; padding-left: 0;
+}
+.form-control-dark:focus {
+    background-color: transparent; border-bottom: 1px solid #d4af37;
+    color: white; box-shadow: none;
+}
+.form-control-dark::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+.booking-item-dark {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: white;
+}
+
+.line-text-hover{
+    position: relative; 
+}
+
+.line-text-hover::after {
+   content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; 
+    background-color: #d4af37; transition: width 0.9s ease; z-index: 2;
+}
+
+.line-text-hover:hover::after { width: 100%; }
+
+
+.nav-calendar-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    cursor: pointer;
+    height: 100%;
+}
+
+
+.calendar-nav-label {
+    color: #d4af37 !important; 
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px; 
+}
+
+
+.header-datepicker-input {
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: #ffffff !important;
+    font-weight: 500;
+    font-size: 1rem;
+    width: 105px;
+    cursor: pointer;
+    padding: 0 !important;
+    box-shadow: none !important;
+    -webkit-appearance: none;
+}
+
+
+.header-datepicker-input:focus,
+.header-datepicker-input:active {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.react-datepicker-wrapper {
+    width: auto !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+
+.custom-price-dropdown {
+    background: transparent;
+}
+
+.price-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 5px 10px;
+    min-width: 120px;
+}
+
+.gold-slider {
+    width: 100%;
+    height: 4px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.gold-slider-thumb {
+    width: 20px;
+    height: 20px;
+    background: #d4af37; 
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    cursor: grab;
+    top: -8px; 
+    outline: none;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    transition: transform 0.1s;
+}
+
+.gold-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.2); 
+}
+
+.track-active {
+    background: #d4af37; 
+    height: 4px;
+    border-radius: 2px;
+    position: absolute;
+}
+
+.track-inactive {
+    background: rgba(255, 255, 255, 0.2);
+    height: 4px;
+    border-radius: 2px;
+    position: absolute;
+}
+
+.custom-gold-pagination .page-link {
+    background-color: rgba(20, 20, 20, 0.8) !important; /* Nền kính tối */
+    color: #ffffff !important; /* Chữ trắng */
+    border: 1px solid rgba(212, 175, 55, 0.3) !important; /* Viền vàng mờ */
+    margin: 0 4px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.custom-gold-pagination .page-link:hover {
+    background-color: rgba(212, 175, 55, 0.2) !important; 
+    color: #d4af37 !important; 
+    border-color: #d4af37 !important;
+}
+
+
+.custom-gold-pagination .page-item.active .page-link {
+    background-color: #d4af37 !important; 
+    color: #000000 !important;
+    border-color: #d4af37 !important;
+    font-weight: bold !important;
+}
+
+.custom-gold-pagination .page-item.disabled .page-link {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    color: rgba(255, 255, 255, 0.2) !important;
+    border-color: transparent !important;
+}
+
+.navbar.glass-panel {
+    position: relative !important; 
+    z-index: 1050 !important; 
+}
+
+
+
+.btn-luxury-glow {
+    background: linear-gradient(90deg, #aa8c2c 0%, #d4af37 50%, #aa8c2c 100%) !important;
+    color: #000000 !important; 
+    border: 1px solid #917522 !important; 
+    
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 10px 24px;
+    border-radius: 4px; 
+    box-shadow: none !important; 
+    cursor: pointer;
+    
+    transition: all 0.3s ease-in-out !important;
+}
+
+.btn-luxury-glow:hover {
+    background: linear-gradient(90deg, #8a6f20 0%, #b3922b 50%, #8a6f20 100%) !important;
+    border-color: #735b18 !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+}
+
+.btn-luxury-glow:active {
+    background: linear-gradient(90deg, #735b18 0%, #917522 50%, #735b18 100%) !important;
+}
