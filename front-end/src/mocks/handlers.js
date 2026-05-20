@@ -2,53 +2,73 @@ import { http, HttpResponse, delay } from 'msw'
 
 
 const db = {
-  roles: [
-    { id: 1, name: 'KhachHang' },
-    { id: 2, name: 'LeTan' },
-    { id: 3, name: 'BanQuanLy' }
-  ],
+
   users: [
-    { id: 1, username: 'khachhang1', email: 'khach@gmail.com', roleId: 1, fullName: 'Nguyễn Văn A' }
+    { userId: 1, name: 'Nguyễn Văn A', phone: '0901234567', isDeleted: 0, avataURL: '', role: 'KHACH_HANG' }
   ],
-  roomCategories: [
-    { id: 1, name: 'Standard', price: 500000, capacity: 2 },
-    { id: 2, name: 'VIP', price: 1500000, capacity: 2 }
-  ],
-  rooms: [
-    { id: 101, roomCategoryId: 1, status: 'Available' },
-    { id: 102, roomCategoryId: 1, status: 'Occupied' },
-    { id: 201, roomCategoryId: 2, status: 'Available' },
-    { id: 103, roomCategoryId: 1, status: 'Available' },
-    { id: 104, roomCategoryId: 1, status: 'Available' },
-    { id: 105, roomCategoryId: 1, status: 'Occupied' },
-    { id: 202, roomCategoryId: 2, status: 'Available' },
-    { id: 203, roomCategoryId: 2, status: 'Occupied' },
-    { id: 301, roomCategoryId: 1, status: 'Available' },
-    { id: 302, roomCategoryId: 2, status: 'Available' },
-    { id: 303, roomCategoryId: 1, status: 'Available' },
-    { id: 304, roomCategoryId: 2, status: 'Available' },
-    { id: 305, roomCategoryId: 1, status: 'Available' }
-  ],
-  services: [
-    { id: 1, name: 'Spa & Massage', price: 300000 },
-    { id: 2, name: 'Thuê xe máy', price: 150000 },
-    { id: 3, name: 'Giặt ủi', price: 50000 }
-  ],
-  bookings: [
-    {
-      id: 1,
-      userId: 1,
-      bookingDate: '2026-05-09',
-      status: 'Confirmed',
-      totalAmount: 500000
+
+  roomTypes: [
+    { 
+      roomTypeId: 1, 
+      name: 'Standard', 
+      price: 500000, 
+      capacity: 2,
+      avatarUrl: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800'
+    },
+    { 
+      roomTypeId: 2, 
+      name: 'VIP', 
+      price: 1500000, 
+      capacity: 2,
+      avatarUrl: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'
     }
   ],
-  bookingDetails: [
-    { id: 1, bookingId: 1, roomId: 102, checkIn: '2026-05-10', checkOut: '2026-05-12' }
-  ],
-  invoices: []
-}
 
+  rooms: [
+    { roomId: 101, roomName: 'P101', roomTypeId: 1, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 102, roomName: 'P102', roomTypeId: 1, roomStatus: 'OCCUPIED', isDeleted: 0, version: 1 },
+    { roomId: 201, roomName: 'V201', roomTypeId: 2, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 103, roomName: 'P103', roomTypeId: 1, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 104, roomName: 'P104', roomTypeId: 1, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 202, roomName: 'P202', roomTypeId: 1, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 103, roomName: 'P103', roomTypeId: 1, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 203, roomName: 'P203', roomTypeId: 2, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 104, roomName: 'P104', roomTypeId: 1, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 105, roomName: 'P105', roomTypeId: 1, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 301, roomName: 'P301', roomTypeId: 1, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 },
+    { roomId: 302, roomName: 'V302', roomTypeId: 2, roomStatus: 'AVAILABLE', isDeleted: 0, version: 1 }
+  ],
+
+  roomBookings: [
+    {
+      roomBookingId: 1,
+      userName: 'Nguyễn Văn A',
+      dayStart: '2026-05-10',
+      dayEnd: '2026-05-12',
+      timeStart: '14:00',
+      timeEnd: '12:00',
+      voucherDiscountMoney: 0,
+      depositAmount: 500000,
+      totalAmount: 1000000 
+    },
+    {
+      roomBookingId: 2,
+      userName: 'Trần Thị B',
+      dayStart: '2026-05-19',
+      dayEnd: '2026-05-21',
+      timeStart: '14:00',
+      timeEnd: '12:00',
+      voucherDiscountMoney: 0,
+      depositAmount: 1000000,
+      totalAmount: 3000000
+    }
+  ],
+
+  roomBookingDetails: [
+    { roomBookingDetailId: 1, roomBookingId: 1, roomId: 102, roomName: 'P102', price: 500000, timeIn: '2026-05-10T14:00:00.000Z', timeOut: '2026-05-12T12:00:00.000Z' },
+    { roomBookingDetailId: 2, roomBookingId: 2, roomId: 201, roomName: 'V201', price: 1500000, timeIn: '2026-05-19T14:00:00.000Z', timeOut: '2026-05-21T12:00:00.000Z' }
+  ]
+};
 
 export const handlers = [
 
@@ -141,46 +161,84 @@ export const handlers = [
 
   http.get('/api/rooms', ({ request }) => {
     const url = new URL(request.url);
-
     const page = parseInt(url.searchParams.get('page') || '1', 10);
     const limit = parseInt(url.searchParams.get('limit') || '6', 10);
+    const type = url.searchParams.get('type') || 'all';
+    const price = url.searchParams.get('price') || 'all';
+    const reqCheckIn = url.searchParams.get('checkIn');
+    const reqCheckOut = url.searchParams.get('checkOut');
 
-    const availableRooms = db.rooms.filter(room => room.status === 'Available');
+    let conflictingRoomIds = [];
+    if (reqCheckIn && reqCheckOut) {
+        const searchIn = new Date(reqCheckIn);
+        const searchOut = new Date(reqCheckOut);
+        conflictingRoomIds = db.roomBookingDetails
+            .filter(detail => new Date(detail.timeIn) < searchOut && new Date(detail.timeOut) > searchIn)
+            .map(detail => detail.roomId);
+    }
 
-    const standardImages = [
-      "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/1743205/pexels-photo-1743205.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=800"
-    ];
+    const availableRooms = db.rooms.filter(room => 
+        room.roomStatus === 'AVAILABLE' && room.isDeleted === 0 && !conflictingRoomIds.includes(room.roomId)
+    );
 
-    const roomsWithDetails = availableRooms.map(room => {
-      const category = db.roomCategories.find(c => c.id === room.roomCategoryId);
-      let imgUrl = "";
-      if (category?.name === 'VIP') {
-        imgUrl = "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80"; 
-      } else {
-
-        imgUrl = standardImages[room.id % standardImages.length]; 
-      }
-
+    let roomsWithDetails = availableRooms.map(room => {
+      const roomType = db.roomTypes.find(c => c.roomTypeId === room.roomTypeId);
       return {
-        ...room,
-        name: category ? category.name : 'Phòng tiêu chuẩn',
-        price: category ? category.price : 0,
-        image: imgUrl
+        id: room.roomId,
+        roomName: room.roomName,
+        name: roomType ? roomType.name : 'Phòng tiêu chuẩn',
+        price: roomType ? roomType.price : 0,
+        avatarUrl: roomType ? roomType.avatarUrl : '' 
       };
     });
 
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedRooms = roomsWithDetails.slice(startIndex, endIndex);
+    if (type !== 'all') {
+        if (type === 'Phòng VIP') roomsWithDetails = roomsWithDetails.filter(room => room.name === 'VIP');
+        else if (type === 'Phòng thường') roomsWithDetails = roomsWithDetails.filter(room => room.name === 'Standard');
+    }
+    if (price !== 'all') {
+        const priceParts = price.split('_'); 
+        if (priceParts.length === 2) {
+            roomsWithDetails = roomsWithDetails.filter(room => room.price >= parseInt(priceParts[0], 10) && room.price <= parseInt(priceParts[1], 10));
+        }
+    }
 
+    const startIndex = (page - 1) * limit;
     return HttpResponse.json({
-      data: paginatedRooms,
-      totalPages: Math.ceil(roomsWithDetails.length / limit),
+      data: roomsWithDetails.slice(startIndex, startIndex + limit),
+      totalPages: Math.ceil(roomsWithDetails.length / limit) || 1,
       currentPage: page
     });
   }),
-]
+  http.get('/api/rooms/:id', ({ params }) => {
+    const roomId = parseInt(params.id, 10);
+    const room = db.rooms.find(r => r.roomId === roomId);
+    if (!room) return HttpResponse.json({ message: "Không tìm thấy phòng" }, { status: 404 });
+
+    const category = db.roomTypes.find(c => c.roomTypeId === room.roomTypeId);
+    const isVip = category?.name === 'VIP';
+
+    const roomDetail = {
+      id: room.roomId,
+      roomName: room.roomName,
+      name: category ? category.name : '',
+      price: category ? category.price : 0,
+      capacity: category ? category.capacity : 2,
+      size: isVip ? '45m²' : '38m²',
+      bedType: isVip ? '1 Giường King' : '2 Giường Đơn',
+      description: isVip 
+        ? "Trải nghiệm đỉnh cao của sự sang trọng với tầm nhìn toàn cảnh thành phố."
+        : "Không gian ấm cúng, thiết kế hiện đại mang lại cảm giác thư thái tuyệt đối.",
+      amenities: ['Wifi tốc độ cao', 'Smart TV 55 inch', 'Mini Bar', 'Bồn tắm', 'Máy pha cafe'],
+      
+      // SỬA: Avatar chính kéo từ Database
+      avatarUrl: category ? category.avatarUrl : '', 
+      
+      // Ảnh lướt xem có thể tách bảng RoomImage sau này, giờ mock tạm
+      images: isVip 
+          ? ["https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80", "https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=800"]
+          : ["https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800", "https://images.pexels.com/photos/1743205/pexels-photo-1743205.jpeg?auto=compress&cs=tinysrgb&w=800"]
+    };
+    return HttpResponse.json(roomDetail);
+  })
+];
