@@ -1,6 +1,4 @@
 import { Col, Container, Dropdown, Nav, Navbar, Row, Stack } from "react-bootstrap";
-import { Link } from "react-router-dom";
-
 const Footer = () => {
     return (
         <Container fluid as="footer" className="glass-panel footer-glass mt-5" data-bs-theme="dark">
