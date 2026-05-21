@@ -85,7 +85,7 @@ CREATE TABLE PaymentMethod (
     name VARCHAR(50) NOT NULL
 );
 
--- Component Recepit
+-- Component Receipt
 CREATE TABLE Receipt (
     receiptId INT AUTO_INCREMENT PRIMARY KEY,
     userName VARCHAR(155) NOT NULL, -- Lưu snapshot
