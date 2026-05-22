@@ -16,7 +16,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
             "com.app.controllers",
             "com.app.repositories",
             "com.app.services"
-
         }
 )
 
