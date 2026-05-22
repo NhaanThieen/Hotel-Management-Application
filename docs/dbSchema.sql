@@ -19,7 +19,7 @@ CREATE TABLE User (
 	username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(15) NOT NULL,
-    isDeleted TINYINT(1) DEFAULT 0,
+    isDeleted TINYINT DEFAULT 0,
     roleId INT NOT NULL,
     avatar TEXT NULL,
     memberTierId INT NULL, -- Cho phép NULL nếu là nhân viên hoặc khách vãng lai
@@ -42,7 +42,7 @@ CREATE TABLE RoomType (
 CREATE TABLE Room (
     roomId INT AUTO_INCREMENT PRIMARY KEY,
     roomName VARCHAR(50) NOT NULL,
-    isDeleted TINYINT(1) DEFAULT 0,
+    isDeleted TINYINT DEFAULT 0,
     version INT DEFAULT 0, -- Kích hoạt Khóa lạc quan cho Hibernate
     avatar TEXT NULL,
     roomTypeId INT NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE Service (
     name VARCHAR(155) NOT NULL,
     price DECIMAL(15,2) NOT NULL,
     stock INT NOT NULL, -- Atomic Update
-    isDeleted TINYINT(1) DEFAULT 0,
+    isDeleted TINYINT DEFAULT 0,
     serviceTypeId INT NOT NULL,
     FOREIGN KEY (serviceTypeId) REFERENCES ServiceType(serviceTypeId)
 );
@@ -75,8 +75,8 @@ CREATE TABLE Voucher (
     percentDiscount DECIMAL(5,2) DEFAULT 0.00,
     maxDiscount DECIMAL(15,2) DEFAULT 0.00,
     minRequire DECIMAL(15,2) DEFAULT 0.00,
-    isActive TINYINT(1) DEFAULT 1,
-    isDeleted TINYINT(1) DEFAULT 0
+    isActive TINYINT DEFAULT 1,
+    isDeleted TINYINT DEFAULT 0
 );
 
 -- Component Payment
