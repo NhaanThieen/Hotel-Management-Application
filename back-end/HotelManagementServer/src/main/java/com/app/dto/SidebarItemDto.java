@@ -11,14 +11,14 @@ package com.app.dto;
  */
 public class SidebarItemDto {
     private String name;
-    private String URL;
+    private String url;
 
     public SidebarItemDto() {
     }
 
-    public SidebarItemDto(String name, String URL) {
+    public SidebarItemDto(String name, String url) {
         this.name = name;
-        this.URL = URL;
+        this.url = url;
     }
 
     /**
@@ -38,17 +38,14 @@ public class SidebarItemDto {
     /**
      * @return the URL
      */
-    public String getURL() {
-        return URL;
+    public String getUrl() {
+        return url;
     }
 
     /**
      * @param URL the URL to set
      */
-    public void setURL(String URL) {
-        this.URL = URL;
+    public void setUrl(String URL) {
+        this.url = URL;
     }
-    
-    
-    
 }

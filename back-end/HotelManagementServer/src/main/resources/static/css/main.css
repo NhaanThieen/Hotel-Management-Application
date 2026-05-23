@@ -1,0 +1,32 @@
+.hover-bg-effect:hover {
+    background-color: #2c3034 !important;
+    color: #fff !important;
+}
+.hover-bg-sub:hover {
+    background-color: #343a40 !important;
+    color: #0dcaf0 !important;
+}
+.nav-link {
+    transition: all 0.2s ease;
+}
+
+/* Tùy chỉnh thanh cuộn thu nhỏ cho đẹp mắt */
+nav::-webkit-scrollbar {
+    width: 5px;
+}
+nav::-webkit-scrollbar-track {
+    background: #212529;
+}
+nav::-webkit-scrollbar-thumb {
+    background: #495057;
+    border-radius: 4px;
+}
+nav::-webkit-scrollbar-thumb:hover {
+    background: #0dcaf0;
+}
+
+/* Hiệu ứng hover riêng cho nút đăng xuất */
+.btn-logout:hover {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
