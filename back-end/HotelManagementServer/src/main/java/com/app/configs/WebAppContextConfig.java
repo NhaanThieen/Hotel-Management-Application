@@ -15,7 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         basePackages = {
             "com.app.controllers",
             "com.app.repositories",
-            "com.app.services"
+            "com.app.services",
+            "com.app.dto"
         }
 )
 
