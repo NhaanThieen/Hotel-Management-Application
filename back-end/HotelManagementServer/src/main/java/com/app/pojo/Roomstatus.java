@@ -38,6 +38,7 @@ public class Roomstatus implements Serializable {
     @Basic(optional = false)
     @Column(name = "roomStatusId")
     private Integer roomStatusId;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)

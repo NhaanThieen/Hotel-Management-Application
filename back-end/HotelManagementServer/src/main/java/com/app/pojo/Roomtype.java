@@ -40,16 +40,19 @@ public class Roomtype implements Serializable {
     @Basic(optional = false)
     @Column(name = "roomTypeId")
     private Integer roomTypeId;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "name")
     private String name;
+    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "price")
     private BigDecimal price;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomTypeId")
     private List<Room> roomList;
 
@@ -122,5 +125,5 @@ public class Roomtype implements Serializable {
     public String toString() {
         return "com.app.pojo.Roomtype[ roomTypeId=" + roomTypeId + " ]";
     }
-    
+
 }

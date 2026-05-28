@@ -1,4 +1,4 @@
-package com.app.dto;
+package com.app.properties;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -9,14 +9,14 @@ package com.app.dto;
  *
  * @author Nhaan
  */
-public class SidebarItemDto {
+public class SidebarItemProperties {
     private String name;
     private String url;
 
-    public SidebarItemDto() {
+    public SidebarItemProperties() {
     }
 
-    public SidebarItemDto(String name, String url) {
+    public SidebarItemProperties(String name, String url) {
         this.name = name;
         this.url = url;
     }

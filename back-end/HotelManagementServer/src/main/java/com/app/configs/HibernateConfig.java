@@ -35,12 +35,11 @@ public class HibernateConfig {
         config.setPassword(env.getProperty("hibernate.connection.password"));
         
         // Mở sẵn 20 connection
-        config.setMaximumPoolSize(20);
+        config.setMaximumPoolSize(env.getProperty("hikari.maximum.poolsize", Integer.class));
         // Ít người dùng thì luôn mở 2 connection
-        config.setMinimumIdle(2);
+        config.setMinimumIdle(env.getProperty("hikari.minium.idle", Integer.class));
         // Connection nào rãnh quá 30s thì hủy để tiết kiệm tài nguyên
-        config.setIdleTimeout(30000);
-        
+        config.setIdleTimeout(env.getProperty("hikari.timeout.idle", Integer.class));
         return new HikariDataSource(config);
     }
 

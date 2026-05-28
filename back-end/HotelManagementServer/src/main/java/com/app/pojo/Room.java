@@ -8,6 +8,7 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,25 +44,32 @@ public class Room implements Serializable {
     @Basic(optional = false)
     @Column(name = "roomId")
     private Integer roomId;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "roomName")
     private String roomName;
+    
     @Column(name = "isDeleted")
     private Boolean isDeleted = false;
+    
     @Column(name = "version")
     private Integer version;
+    
     @Lob
     @Size(max = 65535)
     @Column(name = "avatar")
     private String avatar;
+    
     @JoinColumn(name = "roomStatusId", referencedColumnName = "roomStatusId")
     @ManyToOne(optional = false)
     private Roomstatus roomStatusId;
+    
     @JoinColumn(name = "roomTypeId", referencedColumnName = "roomTypeId")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Roomtype roomTypeId;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomId")
     private List<Roombookingdetail> roombookingdetailList;
 

@@ -1,7 +1,7 @@
 package com.app.configs;
 
-import com.app.dto.SidebarGroupDto;
-import com.app.dto.SidebarItemDto;
+import com.app.properties.SidebarGroupProperties;
+import com.app.properties.SidebarItemProperties;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,8 +18,8 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 @Configuration
 public class SidebarConfig {
 
-    public List<SidebarGroupDto> getFuction() {
-        Map<String, SidebarGroupDto> groupMap = new LinkedHashMap<>();
+    public List<SidebarGroupProperties> getFuction() {
+        Map<String, SidebarGroupProperties> groupMap = new LinkedHashMap<>();
         Properties props = new Properties();
         List<String> orderedKeys = new ArrayList<>(); 
 
@@ -61,12 +61,12 @@ public class SidebarConfig {
                 String icon = parts.length > 2 && !parts[2].isEmpty() ? parts[2].trim() : "";
 
                 if (groupMap.containsKey(groupName)) {
-                    SidebarGroupDto existingGroup = groupMap.get(groupName);
+                    SidebarGroupProperties existingGroup = groupMap.get(groupName);
                     existingGroup.setName(name);
                     existingGroup.setId(id);
                     existingGroup.setIcon(icon);
                 } else {
-                    groupMap.put(groupName, new SidebarGroupDto(name, id, icon));
+                    groupMap.put(groupName, new SidebarGroupProperties(name, id, icon));
                 }
             
             } else if (menuKey.startsWith("sidebar.item.")) {
@@ -75,9 +75,9 @@ public class SidebarConfig {
                 String name = parts.length > 0 && !parts[0].isEmpty() ? parts[0].trim() : "";
                 String url = parts.length > 1 && !parts[1].isEmpty() ? parts[1].trim() : "";
 
-                SidebarGroupDto group = groupMap.get(groupName);
+                SidebarGroupProperties group = groupMap.get(groupName);
                 if (group != null) {
-                    group.addItem(new SidebarItemDto(name, url));
+                    group.addItem(new SidebarItemProperties(name, url));
                 }
             }
         }

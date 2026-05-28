@@ -1,5 +1,5 @@
 <div xmlns:th="http://www.thymeleaf.org" 
-     th:replace="~{base :: layout(~{:: #custom-menu-items}, ~{:: #custom-page-content})}">
+     th:replace="~{Base :: layout(~{:: #custom-menu-items}, ~{:: #custom-page-content})}">
 
     <div id="custom-menu-items" th:remove="tag">
         <div th:each="groupDto : ${sidebarMenu}" class="mb-1">

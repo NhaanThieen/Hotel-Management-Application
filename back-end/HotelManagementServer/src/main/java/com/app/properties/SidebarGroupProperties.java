@@ -1,22 +1,22 @@
 
-package com.app.dto;
+package com.app.properties;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class SidebarGroupDto {
+public class SidebarGroupProperties {
     private String name;
     private String id;
     private String icon;
-    private List<SidebarItemDto> sidebarItems = new ArrayList<>();
+    private List<SidebarItemProperties> sidebarItems = new ArrayList<>();
 
-    public SidebarGroupDto(String names, String id ,String icon) {
+    public SidebarGroupProperties(String names, String id ,String icon) {
         this.name = names;
         this.id = id;
         this.icon = icon;
     }
-    public void addItem(SidebarItemDto item){
+    public void addItem(SidebarItemProperties item){
         this.getSidebarItems().add(item);
     }
 
@@ -65,17 +65,14 @@ public class SidebarGroupDto {
     /**
      * @return the sidebarItems
      */
-    public List<SidebarItemDto> getSidebarItems() {
+    public List<SidebarItemProperties> getSidebarItems() {
         return sidebarItems;
     }
 
     /**
      * @param sidebarItems the sidebarItems to set
      */
-    public void setSidebarItems(List<SidebarItemDto> sidebarItems) {
+    public void setSidebarItems(List<SidebarItemProperties> sidebarItems) {
         this.sidebarItems = sidebarItems;
     }
-    
-    
-    
 }
