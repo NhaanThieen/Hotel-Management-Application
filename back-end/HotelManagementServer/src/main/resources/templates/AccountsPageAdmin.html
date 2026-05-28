@@ -1,0 +1,141 @@
+<head th:remove="all">
+    <title>Quản lý tài khoản</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/main.css">
+</head>
+
+<div xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{Base :: layout(~{:: #custom-menu-items}, ~{:: #custom-page-content})}">
+
+    <div id="custom-menu-items" th:remove="tag">
+        <div th:each="groupDto : ${sidebarMenu}" class="mb-1">
+            <button th:data-id="${groupDto.id}" onclick="toggleSubmenu(this.dataset.id)"
+                class="w-100 border-0 bg-transparent text-white-50 p-3 rounded hover-bg-effect d-flex align-items-center justify-content-between text-start">
+                <span class="d-flex align-items-center">
+                    <i th:class="|fa-solid ${groupDto.icon} me-3 text-info fs-5|" style="width: 24px;"></i>
+                    <span th:text="${groupDto.name}"></span>
+                </span>
+                <i class="fa-solid fa-chevron-down small text-white-50"></i>
+            </button>
+            <div th:id="${groupDto.id}" class="ps-4 d-none bg-black bg-opacity-25 rounded">
+                <a th:each="item : ${groupDto.sidebarItems}" th:text="${item.name}"
+                    class="nav-link text-white-50 py-2 px-3 rounded hover-bg-sub small" th:href="@{${item.url}}"></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="custom-page-content" th:remove="tag">
+        <div class="container-fluid py-2">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0">
+                    <i class="fa-solid fa-box-open me-2 text-primary"></i>Quản lý tài khoản
+                </h4>
+                <button class="btn btn-primary shadow-sm">
+                    <i class="fa-solid fa-plus me-1"></i> Thêm Tài Khoản Mới
+                </button>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4 overflow-hidden">
+                <div class="card-body bg-light rounded">
+                    <form method="GET" class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold text-secondary">Tìm kiếm</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i
+                                        class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input name="keyword" type="text" class="form-control"
+                                    placeholder="Nhập tên hoặc username...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold text-secondary">Vai trò</label>
+                            <select name="roleId" class="form-select">
+                                <option value="" selected>Tất cả</option>
+                                <option value="1">Quản trị viên (Admin)</option>
+                                <option value="2">Nhân viên (Staff)</option>
+                                <option value="3">Khách hàng (Customer)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold text-secondary">Trạng thái</label>
+                            <select name="active" class="form-select">
+                                <option value="" selected>Tất cả</option>
+                                <option value="true">Đang hoạt động</option>
+                                <option value="false">Bị khóa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-secondary w-100">Lọc dữ liệu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0 overflow-hidden mb-4">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-secondary">
+                                <tr>
+                                    <th>Tên Người Dùng</th>
+                                    <th>Tên Tài Khoản</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Vai Trò</th>
+                                    <th>Trạng Thái</th>
+                                    <th class="text-center pe-4">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="account : ${accounts}">
+                                    <td th:text="${account.fullName}">Lê Tam Thiện</td>
+                                    <td class="text-secondary" th:text="${account.username}">tamthien_ou</td>
+                                    <td>
+                                        <div th:text="${account.phone}">0987.654.321</div>
+                                    </td>
+                                    <td><span
+                                            class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle"
+                                            th:text="${account.role != null ? account.role.name : 'Chưa phân quyền'}">Quản
+                                            trị viên</span></td>
+                                    <td><span class="badge bg-success"
+                                            th:classappend="${account.active ? 'bg-success' : 'bg-danger'}"
+                                            th:text="${account.active ? 'Hoạt động' : 'Bị khóa'}">Hoạt động</span></td>
+                                    <td class="text-center pe-4">
+                                        <button class="btn btn-sm btn-outline-info me-1" title="Đổi mật khẩu"><i
+                                                class="fa-solid fa-key"></i></button>
+                                        <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa"><i
+                                                class="fa-solid fa-pen-to-square"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger" title="Lock"><i
+                                                class="fa-solid fa-lock"></i></button>
+                                    </td>
+                                </tr>
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm m-0">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Trước</a>
+                        </li>
+                        <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+
+</div>
