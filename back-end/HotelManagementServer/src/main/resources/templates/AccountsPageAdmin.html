@@ -30,7 +30,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold m-0">
-                    <i class="fa-solid fa-box-open me-2 text-primary"></i>Quản lý tài khoản
+                    <i class="fa-solid fa-users-gear me-2 text-primary"></i>Quản lý tài khoản
                 </h4>
                 <button class="btn btn-primary shadow-sm">
                     <i class="fa-solid fa-plus me-1"></i> Thêm Tài Khoản Mới
@@ -98,7 +98,7 @@
                                             class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle"
                                             th:text="${account.role != null ? account.role.name : 'Chưa phân quyền'}">Quản
                                             trị viên</span></td>
-                                    <td><span class="badge bg-success"
+                                    <td><span class="badge"
                                             th:classappend="${account.active ? 'bg-success' : 'bg-danger'}"
                                             th:text="${account.active ? 'Hoạt động' : 'Bị khóa'}">Hoạt động</span></td>
                                     <td class="text-center pe-4">
