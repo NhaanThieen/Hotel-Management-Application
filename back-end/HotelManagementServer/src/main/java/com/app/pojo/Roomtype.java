@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -40,19 +41,20 @@ public class Roomtype implements Serializable {
     @Basic(optional = false)
     @Column(name = "roomTypeId")
     private Integer roomTypeId;
-    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "name")
     private String name;
-    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "price")
     private BigDecimal price;
-    
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "description")
+    private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomTypeId")
     private List<Room> roomList;
 
@@ -93,6 +95,14 @@ public class Roomtype implements Serializable {
         this.price = price;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -125,5 +135,5 @@ public class Roomtype implements Serializable {
     public String toString() {
         return "com.app.pojo.Roomtype[ roomTypeId=" + roomTypeId + " ]";
     }
-
+    
 }

@@ -8,7 +8,6 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +21,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -35,6 +35,8 @@ import java.util.List;
     @NamedQuery(name = "Room.findByRoomId", query = "SELECT r FROM Room r WHERE r.roomId = :roomId"),
     @NamedQuery(name = "Room.findByRoomName", query = "SELECT r FROM Room r WHERE r.roomName = :roomName"),
     @NamedQuery(name = "Room.findByIsDeleted", query = "SELECT r FROM Room r WHERE r.isDeleted = :isDeleted"),
+    @NamedQuery(name = "Room.findByPrice", query = "SELECT r FROM Room r WHERE r.price = :price"),
+    @NamedQuery(name = "Room.findByCapacity", query = "SELECT r FROM Room r WHERE r.capacity = :capacity"),
     @NamedQuery(name = "Room.findByVersion", query = "SELECT r FROM Room r WHERE r.version = :version")})
 public class Room implements Serializable {
 
@@ -52,22 +54,37 @@ public class Room implements Serializable {
     private String roomName;
     
     @Column(name = "isDeleted")
-    private Boolean isDeleted = false;
+    private Short isDeleted;
+    
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "price")
+    private BigDecimal price;
+    
+    @Column(name = "capacity")
+    private Integer capacity;
     
     @Column(name = "version")
     private Integer version;
     
     @Lob
     @Size(max = 65535)
-    @Column(name = "avatar")
-    private String avatar;
+    @Column(name = "thumbnail")
+    private String thumbnail;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomId")
+    private List<Bed> bedList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomId")
+    private List<Roomimage> roomimageList;
     
     @JoinColumn(name = "roomStatusId", referencedColumnName = "roomStatusId")
     @ManyToOne(optional = false)
     private Roomstatus roomStatusId;
     
     @JoinColumn(name = "roomTypeId", referencedColumnName = "roomTypeId")
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false)
     private Roomtype roomTypeId;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomId")
@@ -80,9 +97,10 @@ public class Room implements Serializable {
         this.roomId = roomId;
     }
 
-    public Room(Integer roomId, String roomName) {
+    public Room(Integer roomId, String roomName, BigDecimal price) {
         this.roomId = roomId;
         this.roomName = roomName;
+        this.price = price;
     }
 
     public Integer getRoomId() {
@@ -101,12 +119,28 @@ public class Room implements Serializable {
         this.roomName = roomName;
     }
 
-    public Boolean getIsDeleted() {
+    public Short getIsDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(Boolean isDeleted) {
+    public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
     }
 
     public Integer getVersion() {
@@ -117,12 +151,28 @@ public class Room implements Serializable {
         this.version = version;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getThumbnail() {
+        return thumbnail;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public List<Bed> getBedList() {
+        return bedList;
+    }
+
+    public void setBedList(List<Bed> bedList) {
+        this.bedList = bedList;
+    }
+
+    public List<Roomimage> getRoomimageList() {
+        return roomimageList;
+    }
+
+    public void setRoomimageList(List<Roomimage> roomimageList) {
+        this.roomimageList = roomimageList;
     }
 
     public Roomstatus getRoomStatusId() {

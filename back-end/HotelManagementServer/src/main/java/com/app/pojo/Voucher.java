@@ -63,7 +63,7 @@ public class Voucher implements Serializable {
     @Column(name = "isActive")
     private Short isActive;
     @Column(name = "isDeleted")
-    private Boolean isDeleted = false;
+    private Short isDeleted;
     @OneToMany(mappedBy = "voucherId")
     private List<Roombooking> roombookingList;
 
@@ -136,11 +136,11 @@ public class Voucher implements Serializable {
         this.isActive = isActive;
     }
 
-    public Boolean getIsDeleted() {
+    public Short getIsDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(Boolean isDeleted) {
+    public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
 

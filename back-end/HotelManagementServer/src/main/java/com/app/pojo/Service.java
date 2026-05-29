@@ -59,7 +59,7 @@ public class Service implements Serializable {
     @Column(name = "stock")
     private int stock;
     @Column(name = "isDeleted")
-    private Boolean isDeleted = false;
+    private Short isDeleted;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceId")
     private List<Roombookingservice> roombookingserviceList;
     @JoinColumn(name = "serviceTypeId", referencedColumnName = "serviceTypeId")
@@ -112,11 +112,11 @@ public class Service implements Serializable {
         this.stock = stock;
     }
 
-    public Boolean getIsDeleted() {
+    public Short getIsDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(Boolean isDeleted) {
+    public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
 

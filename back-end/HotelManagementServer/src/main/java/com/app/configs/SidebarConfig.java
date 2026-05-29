@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -18,6 +19,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 @Configuration
 public class SidebarConfig {
 
+    @Bean
     public List<SidebarGroupProperties> getFuction() {
         Map<String, SidebarGroupProperties> groupMap = new LinkedHashMap<>();
         Properties props = new Properties();

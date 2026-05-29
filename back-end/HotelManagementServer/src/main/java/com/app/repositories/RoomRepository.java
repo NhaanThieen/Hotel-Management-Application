@@ -11,4 +11,5 @@ import java.util.List;
 
 public interface RoomRepository {
     public List<Room> getRooms(RoomSearchCriteria roomData);
+    public Room saveRoom(Room room);
 }

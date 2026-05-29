@@ -4,12 +4,13 @@
  */
 package com.app.services;
 
+import com.app.dto.request.RoomCreateDTO;
 import com.app.dto.request.RoomSearchCriteria;
-import com.app.pojo.Room;
-import java.util.List;
+import com.app.dto.response.ListRoomAdminRoomPageDTO;
 
 
 
 public interface RoomService {
-    public List<Room> getRooms(RoomSearchCriteria roomData);
+    public ListRoomAdminRoomPageDTO getRooms(RoomSearchCriteria roomData);
+    public void createRooms(RoomCreateDTO roomDTO);
 }

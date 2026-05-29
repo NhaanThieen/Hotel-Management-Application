@@ -40,7 +40,7 @@ import java.util.List;
     @NamedQuery(name = "Roombooking.findByBookingCheckIn", query = "SELECT r FROM Roombooking r WHERE r.bookingCheckIn = :bookingCheckIn"),
     @NamedQuery(name = "Roombooking.findByBookingCheckOut", query = "SELECT r FROM Roombooking r WHERE r.bookingCheckOut = :bookingCheckOut"),
     @NamedQuery(name = "Roombooking.findByTimeCheckIn", query = "SELECT r FROM Roombooking r WHERE r.timeCheckIn = :timeCheckIn"),
-    @NamedQuery(name = "Roombooking.findByCancelledTime", query = "SELECT r FROM Roombooking r WHERE r.cancelledTime = :cancelledTime"),
+    @NamedQuery(name = "Roombooking.findByExpiredTime", query = "SELECT r FROM Roombooking r WHERE r.expiredTime = :expiredTime"),
     @NamedQuery(name = "Roombooking.findByVoucherDiscountMoney", query = "SELECT r FROM Roombooking r WHERE r.voucherDiscountMoney = :voucherDiscountMoney"),
     @NamedQuery(name = "Roombooking.findByDepositAmount", query = "SELECT r FROM Roombooking r WHERE r.depositAmount = :depositAmount"),
     @NamedQuery(name = "Roombooking.findByBookingSource", query = "SELECT r FROM Roombooking r WHERE r.bookingSource = :bookingSource"),
@@ -63,6 +63,8 @@ public class Roombooking implements Serializable {
     @Column(name = "bookingCheckIn")
     @Temporal(TemporalType.TIMESTAMP)
     private Date bookingCheckIn;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "bookingCheckOut")
     @Temporal(TemporalType.TIMESTAMP)
     private Date bookingCheckOut;
@@ -71,9 +73,9 @@ public class Roombooking implements Serializable {
     private Date timeCheckIn;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "cancelledTime")
+    @Column(name = "expiredTime")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date cancelledTime;
+    private Date expiredTime;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "voucherDiscountMoney")
     private BigDecimal voucherDiscountMoney;
@@ -117,11 +119,12 @@ public class Roombooking implements Serializable {
         this.roomBookingId = roomBookingId;
     }
 
-    public Roombooking(Integer roomBookingId, String userName, Date bookingCheckIn, Date cancelledTime) {
+    public Roombooking(Integer roomBookingId, String userName, Date bookingCheckIn, Date bookingCheckOut, Date expiredTime) {
         this.roomBookingId = roomBookingId;
         this.userName = userName;
         this.bookingCheckIn = bookingCheckIn;
-        this.cancelledTime = cancelledTime;
+        this.bookingCheckOut = bookingCheckOut;
+        this.expiredTime = expiredTime;
     }
 
     public Integer getRoomBookingId() {
@@ -164,12 +167,12 @@ public class Roombooking implements Serializable {
         this.timeCheckIn = timeCheckIn;
     }
 
-    public Date getCancelledTime() {
-        return cancelledTime;
+    public Date getExpiredTime() {
+        return expiredTime;
     }
 
-    public void setCancelledTime(Date cancelledTime) {
-        this.cancelledTime = cancelledTime;
+    public void setExpiredTime(Date expiredTime) {
+        this.expiredTime = expiredTime;
     }
 
     public BigDecimal getVoucherDiscountMoney() {

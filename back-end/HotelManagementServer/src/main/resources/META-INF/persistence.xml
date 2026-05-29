@@ -19,5 +19,8 @@
     <class>com.app.pojo.Paymentmethod</class>
     <class>com.app.pojo.Roombooking</class>
     <class>com.app.pojo.Roomtype</class>
+    <class>com.app.pojo.Roomimage</class>
+    <class>com.app.pojo.Bed</class>
+    <class>com.app.pojo.Bedtype</class>
   </persistence-unit>
 </persistence>

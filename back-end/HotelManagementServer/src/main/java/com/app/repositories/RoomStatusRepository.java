@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface RoomStatusRepository {
    public List<Roomstatus> getRoomStatus();
+   public Roomstatus getRoomStatusById(Integer id);
 }

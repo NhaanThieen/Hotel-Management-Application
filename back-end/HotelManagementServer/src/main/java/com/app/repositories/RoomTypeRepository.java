@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface RoomTypeRepository {
     public List<Roomtype> getRoomTypes();
-    
+    public Roomtype getRoomTypeById(Integer id);
 }

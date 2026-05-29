@@ -67,7 +67,7 @@ public class User implements Serializable {
     @Column(name = "phone")
     private String phone;
     @Column(name = "isDeleted")
-    private Boolean isDeleted = false;
+    private Short isDeleted;
     @Lob
     @Size(max = 65535)
     @Column(name = "avatar")
@@ -142,11 +142,11 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public Boolean getIsDeleted() {
+    public Short getIsDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(Boolean isDeleted) {
+    public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
 

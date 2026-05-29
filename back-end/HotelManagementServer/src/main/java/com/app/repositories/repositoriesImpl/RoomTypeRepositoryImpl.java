@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class RoomTypeRepositoryImpl implements RoomTypeRepository{
+public class RoomTypeRepositoryImpl implements RoomTypeRepository {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -22,8 +22,14 @@ public class RoomTypeRepositoryImpl implements RoomTypeRepository{
     public List<Roomtype> getRoomTypes() {
         Session session = sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery("FROM Roomtype", Roomtype.class);
+        Query<Roomtype> query = session.createQuery("FROM Roomtype", Roomtype.class);
         return query.getResultList();
 
+    }
+
+    @Override
+    public Roomtype getRoomTypeById(Integer id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Roomtype.class, id);
     }
 }

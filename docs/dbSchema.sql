@@ -18,7 +18,7 @@ CREATE TABLE User (
     name VARCHAR(255) NOT NULL,
 	username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    phone VARCHAR(15) NOT NULL,
+    phone VARCHAR(15) NOT NULL UNIQUE,
     isDeleted TINYINT DEFAULT 0,
     roleId INT NOT NULL,
     avatar TEXT NULL,
@@ -36,19 +36,44 @@ CREATE TABLE RoomStatus (
 CREATE TABLE RoomType (
     roomTypeId INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    price DECIMAL(15,2) NOT NULL -- Đổi sang DECIMAL cho chuẩn tiền tệ
+    price DECIMAL(15,2) NOT NULL, -- Đổi sang DECIMAL cho chuẩn tiền tệ
+    description TEXT
+);
+
+CREATE TABLE BedType(
+	bedTypeId INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255)
 );
 
 CREATE TABLE Room (
     roomId INT AUTO_INCREMENT PRIMARY KEY,
     roomName VARCHAR(50) NOT NULL,
     isDeleted TINYINT DEFAULT 0,
+    price DECIMAL(15,2) NOT NULL,
+	capacity INT DEFAULT 1, -- Số lượng người tối đa trong 1 phòng
     version INT DEFAULT 0, -- Kích hoạt Khóa lạc quan cho Hibernate
-    avatar TEXT NULL,
+    thumbnail TEXT NULL,
     roomTypeId INT NOT NULL,
     roomStatusId INT NOT NULL,
     FOREIGN KEY (roomTypeId) REFERENCES RoomType(roomTypeId),
     FOREIGN KEY (roomStatusId) REFERENCES RoomStatus(roomStatusId)
+);
+
+CREATE TABLE Bed(
+	bedId INT AUTO_INCREMENT PRIMARY KEY,
+    amount INT DEFAULT 0,
+    bedTypeId INT NOT NULL,
+    roomId INT NOT NULL,
+	FOREIGN KEY (roomId) REFERENCES Room(roomId),
+    FOREIGN KEY (bedTypeId) REFERENCES BedType(bedTypeId),
+    UNIQUE (roomId, bedTypeId)
+);
+
+CREATE TABLE RoomImage(
+	roomImageId INT AUTO_INCREMENT PRIMARY KEY,
+    url TEXT,
+    roomId INT NOT NULL,
+	FOREIGN KEY (roomId) REFERENCES Room(roomId)
 );
 
 -- Component SERVICE
@@ -114,9 +139,9 @@ CREATE TABLE RoomBooking (
     roomBookingId INT AUTO_INCREMENT PRIMARY KEY,
     userName VARCHAR(155) NOT NULL, -- lưu snapshot tên khách
     bookingCheckIn DATETIME NOT NULL,
-    bookingCheckOut DATETIME NULL,
+    bookingCheckOut DATETIME NOT NULL,
 	timeCheckIn DATETIME NULL,
-    cancelledTime DATETIME NOT NULL, -- Nếu sau thời gian này mà khách không tới thì hủy roombooking này
+    expiredTime DATETIME NOT NULL, -- Nếu sau thời gian này mà khách không tới thì hủy roombooking này
     voucherDiscountMoney DECIMAL(15,2) DEFAULT 0.00,
     depositAmount DECIMAL(15,2) DEFAULT 0.00, -- Tiền cọc khi đặt phòng
     bookingSource VARCHAR(100) NULL,

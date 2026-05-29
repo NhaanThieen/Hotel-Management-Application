@@ -1,13 +1,15 @@
 
 package com.app.dto.request;
 
+import java.math.BigDecimal;
+
 
 public class RoomSearchCriteria {
     private String name;
     private Integer statusId;
     private Integer typeId;
-    private Double minPrice;
-    private Double maxPrice;
+    private BigDecimal minPrice;
+    private BigDecimal maxPrice;
     private Integer page = 1;
 
     /**
@@ -55,28 +57,28 @@ public class RoomSearchCriteria {
     /**
      * @return the minPrice
      */
-    public Double getMinPrice() {
+    public BigDecimal getMinPrice() {
         return minPrice;
     }
 
     /**
      * @param minPrice the minPrice to set
      */
-    public void setMinPrice(Double minPrice) {
+    public void setMinPrice(BigDecimal minPrice) {
         this.minPrice = minPrice;
     }
 
     /**
      * @return the maxPrice
      */
-    public Double getMaxPrice() {
+    public BigDecimal getMaxPrice() {
         return maxPrice;
     }
 
     /**
      * @param maxPrice the maxPrice to set
      */
-    public void setMaxPrice(Double maxPrice) {
+    public void setMaxPrice(BigDecimal maxPrice) {
         this.maxPrice = maxPrice;
     }
 

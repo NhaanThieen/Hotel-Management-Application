@@ -3,6 +3,7 @@ package com.app.configs;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -38,7 +39,7 @@ public class WebAppContextConfig implements WebMvcConfigurer {
     }
 
     
-    // Spring MVC thuần thì File tĩnh được cấu hình không nằm ở trong resources. Nên cần phải cấu hình
+    // Spring MVC thuần thì File tĩnh được cấu hình không nằm ở trong folder resources. Nên cần phải cấu hình
     // lại cho trỏ về resources.
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -48,5 +49,9 @@ public class WebAppContextConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/js/**")
                 .addResourceLocations("classpath:/static/js/");
     }
+
+
+    
+    
 
 }
