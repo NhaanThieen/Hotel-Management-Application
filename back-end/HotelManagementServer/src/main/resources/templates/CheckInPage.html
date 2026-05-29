@@ -1,0 +1,185 @@
+<head th:remove="all">
+    <title>Làm thủ tục Nhận phòng - Lễ tân</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/main.css">
+</head>
+
+<div xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{Base :: layout(~{:: #custom-menu-items}, ~{:: #custom-page-content})}">
+
+    <div id="custom-menu-items" th:remove="tag">
+        <div th:each="groupDto : ${sidebarMenu}" class="mb-1">
+            <button th:data-id="${groupDto.id}" onclick="toggleSubmenu(this.dataset.id)"
+                class="w-100 border-0 bg-transparent text-white-50 p-3 rounded hover-bg-effect d-flex align-items-center justify-content-between text-start">
+                <span class="d-flex align-items-center">
+                    <i th:class="|fa-solid ${groupDto.icon} me-3 text-info fs-5|" style="width: 24px;"></i>
+                    <span th:text="${groupDto.name}"></span>
+                </span>
+                <i class="fa-solid fa-chevron-down small text-white-50"></i>
+            </button>
+            <div th:id="${groupDto.id}" class="ps-4 d-none bg-black bg-opacity-25 rounded">
+                <a th:each="item : ${groupDto.sidebarItems}" th:text="${item.name}"
+                    class="nav-link text-white-50 py-2 px-3 rounded hover-bg-sub small" th:href="@{${item.url}}"></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="custom-page-content" th:remove="tag">
+        <div class="container-fluid py-3">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0">
+                    <i class="fa-solid fa-clipboard-check me-2 text-primary"></i>Thủ tục nhận phòng
+                </h4>
+                <a href="ReceptionDashboard.html" th:href="@{/reception/dashboard}"
+                    class="btn btn-outline-secondary btn-sm">
+                    <i class="fa-solid fa-arrow-left me-1"></i>Sơ đồ phòng
+                </a>
+            </div>
+
+            <form th:action="@{/reception/check-in}" method="POST" th:object="${checkInForm}">
+
+                <input type="hidden" th:field="*{bookingId}" name="bookingId" value="1">
+
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm border-0 bg-light">
+                            <div class="card-header bg-transparent border-bottom-0 pt-3 pb-0">
+                                <h6 class="fw-bold text-secondary"><i class="fa-solid fa-circle-info me-2"></i>Chi tiết
+                                    Đặt phòng</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Phòng - Loại phòng</small>
+                                    <strong class="fs-5 text-success"
+                                        th:text="${bookingInfo.roomName + ' - ' + bookingInfo.roomTypeName}">102 - Phòng
+                                        Đôi VIP</strong>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Tên khách hàng</small>
+                                    <strong th:text="${bookingInfo.bookerName}">Lê Tam Thiện</strong>
+                                    <div class="small text-secondary" th:text="${bookingInfo.bookerPhone}">0000000</div>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Thời gian lưu trú dự kiến</small>
+                                    <div class="fw-semibold">Check-in: <span
+                                            th:text="${#dates.format(bookingInfo.expectedCheckIn, 'dd/MM/yyyy HH:mm')}">29/05/2026
+                                            14:00</span></div>
+                                    <div class="fw-semibold">Check-out: <span
+                                            th:text="${#dates.format(bookingInfo.expectedCheckOut, 'dd/MM/yyyy HH:mm')}">31/05/2026
+                                            12:00</span></div>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted fw-bold">Đã đặt cọc:</small>
+                                    <strong class="text-danger"
+                                        th:text="${#numbers.formatDecimal(bookingInfo.deposit, 0, 'COMMA', 0, 'POINT')} + ' đ'">500,000
+                                        đ</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div
+                                class="card-header bg-white border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold text-primary m-0"><i class="fa-solid fa-users me-2"></i>Khai báo
+                                    thông tin lưu trú</h6>
+                                <button type="button" id="btnAddGuest" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-solid fa-user-plus me-1"></i>Thêm người
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-borderless table-hover m-0" id="guestTable">
+                                        <thead class="table-light small text-secondary">
+                                            <tr>
+                                                <th style="width: 5%;">STT</th>
+                                                <th style="width: 35%;">Họ và tên</th>
+                                                <th style="width: 30%;">CCCD / Passport</th>
+                                                <th style="width: 20%;">Giới tính</th>
+                                                <th style="width: 10%; text-align: center;">Xóa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="guestTableBody">
+
+                                            <tr class="guest-row" th:each="guest, stat : *{guests}">
+                                                <td class="align-middle fw-bold text-secondary row-number"
+                                                    th:text="${stat.index + 1}">1</td>
+                                                <td>
+                                                    <input type="text" th:field="*{guests[__${stat.index}__].fullName}"
+                                                        name="guests[0].fullName"
+                                                        class="form-control form-control-sm text-uppercase" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text"
+                                                        th:field="*{guests[__${stat.index}__].identityNumber}"
+                                                        name="guests[0].identityNumber"
+                                                        class="form-control form-control-sm" required>
+                                                </td>
+                                                <td>
+                                                    <select th:field="*{guests[__${stat.index}__].gender}"
+                                                        name="guests[0].gender" class="form-select form-select-sm">
+                                                        <option value="Nam">Nam</option>
+                                                        <option value="Nữ">Nữ</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <button type="button"
+                                                        class="btn btn-sm text-danger btn-remove-guest"
+                                                        th:disabled="${stat.index == 0}">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+
+                                            <tr class="guest-row" th:remove="all">
+                                                <td class="align-middle fw-bold text-secondary row-number">1</td>
+                                                <td><input type="text" name="guests[0].fullName"
+                                                        class="form-control form-control-sm text-uppercase"
+                                                        placeholder="NGUYEN VAN A" required></td>
+                                                <td><input type="text" name="guests[0].identityNumber"
+                                                        class="form-control form-control-sm" placeholder="079..."
+                                                        required></td>
+                                                <td>
+                                                    <select name="guests[0].gender" class="form-select form-select-sm">
+                                                        <option value="Nam">Nam</option>
+                                                        <option value="Nữ">Nữ</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <button type="button"
+                                                        class="btn btn-sm text-danger btn-remove-guest" disabled><i
+                                                            class="fa-solid fa-trash-can"></i></button>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div
+                                class="card-footer bg-white p-3 border-top d-flex justify-content-end align-items-center">
+                                <span class="text-muted small me-3">
+                                    <i class="fa-solid fa-clock me-1"></i>Giờ Check-in thực tế:
+                                    <strong class="text-dark"
+                                        th:text="${#dates.format(#dates.createNow(), 'HH:mm dd/MM')}">15:30
+                                        29/05</strong>
+                                </span>
+                                <button type="submit" class="btn btn-success fw-semibold px-4 shadow-sm">
+                                    Xác nhận thông tin & Nhận phòng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="../static/js/reception.js" th:src="@{/js/reception.js}"></script>
+</div>

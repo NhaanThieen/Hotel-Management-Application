@@ -74,8 +74,10 @@
                         <div class="col-auto">
                             <button type="submit" class="btn btn-sm btn-primary shadow-sm"><i
                                     class="fa-solid fa-magnifying-glass"></i> Tra cứu</button>
-                            <button type="button" class="btn btn-sm btn-success shadow-sm ms-2"><i
-                                    class="fa-solid fa-user-plus"></i> Khách vãng lai</button>
+                            <a href="WalkInBooking.html" th:href="@{/reception/walk-in}"
+                                class="btn btn-sm btn-success shadow-sm ms-2">
+                                <i class="fa-solid fa-user-plus"></i> Khách đặt phòng trực tiếp
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -109,9 +111,43 @@
                                 <span class="text-muted small" th:if="${room.roomStatusId.roomStatusId == 1}">
                                     <i class="fa-solid fa-check text-success me-1"></i> Sẵn sàng
                                 </span>
-                                <button class="btn btn-sm btn-light text-secondary rounded-circle px-2 border">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light text-secondary rounded-circle px-2 border"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+
+                                        <li th:if="${room.roomStatusId.roomStatusId == 3}">
+                                            <a class="dropdown-item text-success fw-semibold" href="CheckInPage.html"
+                                                th:href="@{/reception/check-in(roomId=${room.roomId})}">
+                                                <i class="fa-solid fa-clipboard-check me-2"></i>Làm thủ tục Nhận phòng
+                                            </a>
+                                        </li>
+
+                                        <li th:if="${room.roomStatusId.roomStatusId == 2}">
+                                            <a class="dropdown-item text-danger fw-semibold"
+                                                href="ActiveStayManagement.html"
+                                                th:href="@{/reception/active-stay(roomId=${room.roomId})}">
+                                                <i class="fa-solid fa-bed me-2"></i>Quản lý phòng đang ở
+                                            </a>
+                                        </li>
+
+                                        <li th:if="${room.roomStatusId.roomStatusId == 1}">
+                                            <a class="dropdown-item text-primary fw-semibold" href="WalkInBooking.html"
+                                                th:href="@{/reception/walk-in(roomId=${room.roomId})}">
+                                                <i class="fa-solid fa-user-plus me-2"></i>Đặt phòng trực tiếp
+                                            </a>
+                                        </li>
+
+                                        <li th:if="${room.roomStatusId.roomStatusId == 4}">
+                                            <span class="dropdown-item text-muted">
+                                                <i class="fa-solid fa-broom me-2"></i>Đang chờ dọn dẹp
+                                            </span>
+                                        </li>
+
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -149,5 +185,6 @@
             </div>
         </div>
     </div>
-    <script src="../static/js/main.js" th:src="@{/js/main.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/reception.js" th:src="@{/js/reception.js}"></script>
 </div>
