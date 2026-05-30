@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button, NavDropdown, Navbar, Stack } from "react-bootstrap";
 import ReactSlider from 'react-slider';
 import BookingDateRange from "./BookingDateRange";
+import { debounce } from "lodash";
 
 const RoomSearchBar = ({ onSearch, initialValues = {}, hoverClass = "line-text-hover" }) => {
     const [checkInDate, setCheckInDate] = useState(initialValues.checkInDate || new Date());
@@ -9,6 +10,8 @@ const RoomSearchBar = ({ onSearch, initialValues = {}, hoverClass = "line-text-h
     const [priceRange, setPriceRange] = useState(initialValues.priceRange || [500000, 5000000]);
     const [selectedRoomType, setSelectedRoomType] = useState(initialValues.roomType || "Theo phòng");
     const [isPriceChanged, setIsPriceChanged] = useState(false);
+
+    
 
     const formatVND = (price) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Pagination, Row, Stack } from "react-bootstrap";
-import MySpinner from "../components/MySpinner";
-import RoomListDisplay from "../components/RoomListDisplay";
+import MySpinner from "../../components/MySpinner";
+import RoomListDisplay from "../../components/RoomListDisplay";
 
 const Home = () => {
 

@@ -1,6 +1,16 @@
-.text-gold { color: #d4af37 !important; }
-.border-gold { border-color: #d4af37 !important; }
-.price-tag { color: #d4af37; font-weight: bold; font-size: 1.1rem; }
+.text-gold {
+    color: #d4af37 !important;
+}
+
+.border-gold {
+    border-color: #d4af37 !important;
+}
+
+.price-tag {
+    color: #d4af37;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
 
 .luxury-title {
     font-family: 'Playfair Display', serif;
@@ -27,42 +37,53 @@
     overflow: hidden;
     cursor: pointer;
     position: relative;
-    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                border-color 0.6s ease, 
-                box-shadow 0.6s ease !important;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
+        border-color 0.6s ease,
+        box-shadow 0.6s ease !important;
 }
 
 .glass-card:hover .room-img {
-    transform: scale(1.1); 
+    transform: scale(1.1);
 }
 
-.glass-card::before{
+.glass-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: -150%;
     width: 100%;
-    height:100%;
-    background: linear-gradient(90deg, rgba(255,255,255,0) 0%,rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100% );
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
     transition: left 0.6s ease;
     z-index: 1;
-}   
+}
 
 .glass-card:hover {
-    transform: translateY(-6px) !important; 
-    border-color:  rgba(212, 175, 55, 0.8) !important;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 
-                0 0 15px rgba(212, 175, 55, 0.25) !important; 
+    transform: translateY(-6px) !important;
+    border-color: rgba(212, 175, 55, 0.8) !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(212, 175, 55, 0.25) !important;
 }
 
-.glass-card:hover::before { left: 150%; }
+.glass-card:hover::before {
+    left: 150%;
+}
 
 .glass-card::after {
-    content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; 
-    background-color: #d4af37; transition: width 0.6s ease; z-index: 2;
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #d4af37;
+    transition: width 0.6s ease;
+    z-index: 2;
 }
 
-.glass-card:hover::after { width: 100%; }
+.glass-card:hover::after {
+    width: 100%;
+}
 
 .glass-card-static {
     background: rgba(20, 20, 20, 0.7) !important;
@@ -73,58 +94,96 @@
     position: relative;
 }
 
-.room-img { 
-    width: 100%; 
-    height: 130px; 
-    object-fit: cover; 
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    transition: transform 0.6s ease; 
+.room-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.6s ease;
 }
-.room-img-placeholder { 
-    height: 130px; display: flex; align-items: center; justify-content: center; 
-    font-size: 2.5rem; color: rgba(255,255,255,0.2); 
+
+.room-img-placeholder {
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-gold {
-    background-color: #d4af37 !important; color: #000 !important; font-weight: bold !important;
-    border-radius: 25px !important; border: none !important; transition: all 0.3s !important;
+    background-color: #d4af37 !important;
+    color: #000 !important;
+    font-weight: bold !important;
+    border-radius: 25px !important;
+    border: none !important;
+    transition: all 0.3s !important;
 }
-.btn-gold:hover { background-color: #f1c40f; transform: translateY(-2px); }
+
+.btn-gold:hover {
+    background-color: #f1c40f;
+    transform: translateY(-2px);
+}
 
 .btn-room-dark {
-    background: rgba(255, 255, 255, 0.05) !important; color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important; border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 10px !important;
     transition: all 0.2s !important;
 }
-.btn-room-dark:hover, .btn-room-dark.active {
-    background: #d4af37 !important; color: black !important; border-color: #d4af37 !important;
+
+.btn-room-dark:hover,
+.btn-room-dark.active {
+    background: #d4af37 !important;
+    color: black !important;
+    border-color: #d4af37 !important;
 }
 
 .form-control-dark {
-    background-color: transparent; border: none;
+    background-color: transparent;
+    border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 0; color: white; padding-left: 0;
+    border-radius: 0;
+    color: white;
+    padding-left: 0;
 }
+
 .form-control-dark:focus {
-    background-color: transparent; border-bottom: 1px solid #d4af37;
-    color: white; box-shadow: none;
+    background-color: transparent;
+    border-bottom: 1px solid #d4af37;
+    color: white;
+    box-shadow: none;
 }
-.form-control-dark::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+.form-control-dark::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
 
 .booking-item-dark {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
-.line-text-hover{
-    position: relative; 
+.line-text-hover {
+    position: relative;
 }
 
 .line-text-hover::after {
-   content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; 
-    background-color: #d4af37; transition: width 0.9s ease; z-index: 2;
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #d4af37;
+    transition: width 0.9s ease;
+    z-index: 2;
 }
 
-.line-text-hover:hover::after { width: 100%; }
+.line-text-hover:hover::after {
+    width: 100%;
+}
 
 
 .nav-calendar-wrapper {
@@ -138,12 +197,12 @@
 
 
 .calendar-nav-label {
-    color: #d4af37 !important; 
+    color: #d4af37 !important;
     font-size: 0.75rem;
     text-transform: uppercase;
     font-weight: bold;
     letter-spacing: 0.5px;
-    margin-bottom: 2px; 
+    margin-bottom: 2px;
 }
 
 
@@ -200,11 +259,11 @@
 .gold-slider-thumb {
     width: 20px;
     height: 20px;
-    background: #d4af37; 
+    background: #d4af37;
     border: 2px solid #ffffff;
     border-radius: 50%;
     cursor: grab;
-    top: -8px; 
+    top: -8px;
     outline: none;
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
     transition: transform 0.1s;
@@ -212,11 +271,11 @@
 
 .gold-slider-thumb:active {
     cursor: grabbing;
-    transform: scale(1.2); 
+    transform: scale(1.2);
 }
 
 .track-active {
-    background: #d4af37; 
+    background: #d4af37;
     height: 4px;
     border-radius: 2px;
     position: absolute;
@@ -230,23 +289,26 @@
 }
 
 .custom-gold-pagination .page-link {
-    background-color: rgba(20, 20, 20, 0.8) !important; /* Nền kính tối */
-    color: #ffffff !important; /* Chữ trắng */
-    border: 1px solid rgba(212, 175, 55, 0.3) !important; /* Viền vàng mờ */
+    background-color: rgba(20, 20, 20, 0.8) !important;
+    /* Nền kính tối */
+    color: #ffffff !important;
+    /* Chữ trắng */
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    /* Viền vàng mờ */
     margin: 0 4px !important;
     border-radius: 8px !important;
     transition: all 0.3s ease;
 }
 
 .custom-gold-pagination .page-link:hover {
-    background-color: rgba(212, 175, 55, 0.2) !important; 
-    color: #d4af37 !important; 
+    background-color: rgba(212, 175, 55, 0.2) !important;
+    color: #d4af37 !important;
     border-color: #d4af37 !important;
 }
 
 
 .custom-gold-pagination .page-item.active .page-link {
-    background-color: #d4af37 !important; 
+    background-color: #d4af37 !important;
     color: #000000 !important;
     border-color: #d4af37 !important;
     font-weight: bold !important;
@@ -259,25 +321,25 @@
 }
 
 .navbar.glass-panel {
-    position: relative !important; 
-    z-index: 1050 !important; 
+    position: relative !important;
+    z-index: 1050 !important;
 }
 
 
 
 .btn-luxury-glow {
     background: linear-gradient(90deg, #aa8c2c 0%, #d4af37 50%, #aa8c2c 100%) !important;
-    color: #000000 !important; 
-    border: 1px solid #917522 !important; 
-    
+    color: #000000 !important;
+    border: 1px solid #917522 !important;
+
     font-family: 'Playfair Display', serif;
     font-weight: 600;
     letter-spacing: 1px;
     padding: 10px 24px;
-    border-radius: 4px; 
-    box-shadow: none !important; 
+    border-radius: 4px;
+    box-shadow: none !important;
     cursor: pointer;
-    
+
     transition: all 0.3s ease-in-out !important;
 }
 
@@ -290,4 +352,359 @@
 
 .btn-luxury-glow:active {
     background: linear-gradient(90deg, #735b18 0%, #917522 50%, #735b18 100%) !important;
+}
+
+.btn-custom-back {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    transition: all 0.3s ease;
+    width: fit-content;
+}
+
+.btn-custom-back:hover {
+    border-color: #d4af37 !important;
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    color: #d4af37 !important;
+}
+
+.glass-card-static-light {
+    background-color: rgba(0, 0, 0, 0.15) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 12px;
+    color: white !important;
+    position: relative;
+}
+
+.custom-dark-input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important; 
+    font-style: italic; 
+    opacity: 1; 
+}
+
+.custom-dark-input::-webkit-calendar-picker-indicator {
+    filter: invert(1) opacity(0.7); 
+    cursor: pointer;
+}
+.custom-gold-tabs .nav-link {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    border: none !important;
+    background: transparent !important;
+}
+
+.custom-gold-tabs .nav-link:hover {
+    color: #ffffff !important;
+}
+
+.custom-gold-tabs .nav-link.active {
+    color: #d4af37 !important; 
+    border-bottom: 2px solid #d4af37 !important; 
+}
+
+.profile-avatar {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    background-color: #1e1e1e;
+}
+
+.membership-card {
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.75) 0%, rgba(15, 15, 15, 0.9) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(214, 175, 55, 0.3);
+}
+
+.membership-card-inner {
+    min-height: 150px;
+    z-index: 2;
+}
+
+.membership-brand {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.15em;
+    font-size: 1.2rem;
+}
+
+.membership-label-wide {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+}
+
+.membership-label-small {
+    font-size: 0.65rem;
+}
+
+.cursor-not-allowed {
+    cursor: not-allowed !important;
+}
+
+.divider-1px {
+    height: 1px;
+}
+
+.input-no-border-right {
+    border-right: none !important;
+}
+
+.icon-eye-wrapper {
+    cursor: pointer;
+    border-left: none !important;
+}
+
+
+.booking-status-badge {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.booking-card {
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.booking-card:hover {
+    border-color: rgba(212, 175, 55, 0.6) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+}
+
+.booking-detail-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.booking-meta-label {
+    font-size: 0.85rem;
+}
+
+.divider-booking-dashed {
+    height: 1px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.checkout-payment-card {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.checkout-payment-card.active {
+    border-color: #d4af37 !important;
+    background: rgba(212, 175, 55, 0.08) !important;
+}
+
+.checkout-qr-wrapper {
+    background-color: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    width: 180px;
+    height: 180px;
+}
+
+.checkout-receipt-panel {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+}
+
+
+
+.receipt-paper {
+    background: rgba(25, 25, 25, 0.85) !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    border-radius: 16px;
+    position: relative;
+}
+
+.receipt-watermark-icon {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    font-size: 8rem;
+    color: rgba(212, 175, 55, 0.03);
+    pointer-events: none;
+}
+
+.receipt-header-box {
+    border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+}
+
+.receipt-item-row {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.receipt-total-panel {
+    background: rgba(212, 175, 55, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+}
+
+.receipt-footer-stamp {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+.receipt-actions-wrapper {
+    margin-top: 2rem;
+}
+
+/* =========================================
+   CHẾ ĐỘ IN ẤN (FIX TRIỆT ĐỂ LỖI BỊ XÉN ĐẦU TRANG)
+   ========================================= */
+@media print {
+    /* 1. Thiết lập lề giấy an toàn cho máy in */
+    @page {
+        margin: 10mm;
+    }
+
+    /* 2. LỆNH TỐI CAO: Phá vỡ mọi giới hạn canh giữa của React */
+    html, body, #root, .App {
+        display: block !important;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        position: static !important;
+        /* Gỡ bỏ canh giữa dọc/ngang của Flexbox ở cấp độ Root */
+        align-items: flex-start !important; 
+        justify-content: flex-start !important;
+    }
+
+    /* 3. Ép in đồ họa nền màu tối */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    body {
+        background-color: #121212 !important; 
+    }
+
+    /* 4. Ẩn nút bấm */
+    .print-hide {
+        display: none !important;
+    }
+
+    /* 5. Khôi phục lại không gian cho Container của Bootstrap */
+    .container, .container-fluid {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Xóa các khoảng trống thừa của trang */
+    .my-5, .py-4, .px-lg-5, .p-md-5, .p-4 {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* 6. Định dạng Hóa đơn: Cho phép ngắt trang tự nhiên */
+    .receipt-paper {
+        background: rgba(25, 25, 25, 0.95) !important;
+        border: 1px solid rgba(212, 175, 55, 0.6) !important;
+        display: block !important; 
+        overflow: visible !important; 
+        page-break-inside: auto !important; /* Dài quá thì tự nhảy sang trang 2 */
+        margin: 0 !important; 
+        padding: 25px !important; /* Tạo lề thở bên trong */
+        border-radius: 0 !important; 
+        box-shadow: none !important;
+    }
+    
+    /* 7. Giữ nguyên cấu trúc Row/Col 2 cột, không ép về Block nữa */
+    .row {
+        display: flex !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* 8. Cấm cắt đôi các khối thông tin nội bộ khi sang trang */
+    .receipt-header-box, 
+    .receipt-item-row, 
+    .receipt-total-panel {
+        page-break-inside: avoid !important; 
+    }
+
+    .receipt-total-panel {
+        background: rgba(212, 175, 55, 0.08) !important;
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    }
+
+    /* 9. Ẩn logo chìm */
+    .receipt-watermark-icon {
+        display: none !important;
+    }
+}
+
+.service-card {
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.service-card:hover {
+    transform: translateY(-8px) !important;
+    border-color: #d4af37 !important;
+    box-shadow: 0 15px 30px rgba(212, 175, 55, 0.15) !important;
+}
+
+.service-img-wrapper {
+    height: 220px;
+    overflow: hidden;
+    position: relative;
+}
+
+.service-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.service-card:hover .service-img {
+    transform: scale(1.08);
+}
+
+.service-badge-overlay {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+}
+
+.service-content-box {
+    min-height: 160px;
+}
+
+.glass-modal-content {
+    background: rgba(25, 25, 25, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important;
+}
+
+.glass-modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.glass-modal-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.modal-service-icon {
+    font-size: 4rem;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
 }
