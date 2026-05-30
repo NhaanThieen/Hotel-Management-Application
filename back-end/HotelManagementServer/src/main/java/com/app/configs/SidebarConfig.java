@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import org.springframework.context.annotation.Configuration;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
@@ -19,12 +20,28 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 public class SidebarConfig {
 
     public List<SidebarGroupProperties> getFuction() {
+        return getFuction(null);
+    }
+
+    public List<SidebarGroupProperties> getFuction(HttpServletRequest request) {
         Map<String, SidebarGroupProperties> groupMap = new LinkedHashMap<>();
         Properties props = new Properties();
         List<String> orderedKeys = new ArrayList<>(); 
 
+        String resourceName = "SidebarFunctions_vi.properties";
+        if (request != null) {
+            String uri = request.getRequestURI();
+            if (uri != null) {
+                if (uri.startsWith("/admin")) {
+                    resourceName = "Sidebar_Admin.properties";
+                } else if (uri.startsWith("/reception") || uri.startsWith("/reception/")) {
+                    resourceName = "Sidebar_Receptionist.properties";
+                }
+            }
+        }
+
         try {
-            ClassPathResource resource = new ClassPathResource("SidebarFunctions_vi.properties");
+            ClassPathResource resource = new ClassPathResource(resourceName);
             
             // Nạp thuộc tính để xử lý Unicode tự động
             props = PropertiesLoaderUtils.loadProperties(resource);

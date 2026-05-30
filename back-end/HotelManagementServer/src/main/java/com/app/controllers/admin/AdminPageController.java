@@ -35,8 +35,8 @@ public class AdminPageController {
     private RoomStatusService roomStatusService;
 
     @ModelAttribute
-    public void commonResponse(Model model) {
-        List functions = sidebarConfig.getFuction();
+    public void commonResponse(Model model, javax.servlet.http.HttpServletRequest request) {
+        List functions = sidebarConfig.getFuction(request);
         model.addAttribute("sidebarMenu", functions);
     }
 
