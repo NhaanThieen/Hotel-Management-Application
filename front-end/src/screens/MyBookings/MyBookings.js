@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import MySpinner from "../../components/MySpinner";
 import BackButton from "../../components/BackButton";
 import BookingCard from "../../components/BookingCard";
+import ReviewModal from "../../components/ReviewModal";
 import toast from "react-hot-toast";
 
-// Đưa hàm format ra ngoài để không khởi tạo lại mỗi lần render
 const formatVND = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 const formatDate = (dateStr) => {
     if (!dateStr) return "";
@@ -14,10 +14,20 @@ const formatDate = (dateStr) => {
     return `${day}/${month}/${year}`;
 };
 
+
+
 const MyBookings = () => {
     const navigate = useNavigate();
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [selectedBookingForReview, setSelectedBookingForReview] = useState(null);
+
+    const handleOpenReview = (booking) => {
+        setSelectedBookingForReview(booking);
+        setShowReviewModal(true);
+    };
 
     useEffect(() => {
         const userStr = localStorage.getItem("user");
@@ -66,16 +76,23 @@ const MyBookings = () => {
             ) : (
                 <Stack gap={4}>
                     {transactions.map((item, idx) => (
-                        <BookingCard 
-                            key={`${item.type}-${item.id}-${idx}`} 
-                            item={item} 
+                        <BookingCard
+                            key={`${item.type}-${item.id}-${idx}`}
+                            item={item}
                             formatVND={formatVND}
                             formatDate={formatDate}
                             onNavigate={(id) => navigate(`/receipt/${id}`)}
+                            onReview={() => handleOpenReview(item)}
                         />
                     ))}
                 </Stack>
             )}
+
+            <ReviewModal 
+                show={showReviewModal} 
+                onHide={() => setShowReviewModal(false)}
+                bookingInfo={selectedBookingForReview}
+            />
         </Container>
     );
 };

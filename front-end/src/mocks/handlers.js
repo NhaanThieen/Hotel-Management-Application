@@ -134,13 +134,38 @@ const db = {
   roomBookingDetails: [
     { roomBookingDetailId: 1, roomBookingId: 1, roomId: 102, roomName: 'P102', price: 500000, timeIn: '2026-05-10T14:00:00.000Z', timeOut: '2026-05-12T12:00:00.000Z' },
     { roomBookingDetailId: 2, roomBookingId: 2, roomId: 201, roomName: 'V201', price: 1500000, timeIn: '2026-05-19T14:00:00.000Z', timeOut: '2026-05-21T12:00:00.000Z' }
-  ]
+  ],
+
+  reviews: []
 };
 
 let lastWalkInService = null;
 
 
 export const handlers = [
+
+http.post('/api/reviews', async ({ request }) => {
+    await delay(800); 
+    const payload = await request.json();
+
+    const newReview = {
+        reviewId: db.reviews.length + 1,
+        bookingId: payload.bookingId,
+        ratings: payload.ratings,
+        tags: payload.tags,
+        comment: payload.comment,
+        createdAt: new Date().toISOString()
+    };
+    db.reviews.push(newReview);
+
+    console.log("--> BE đã nhận Đánh giá mới:", newReview);
+
+    return HttpResponse.json(
+      { message: 'Gửi đánh giá thành công!', data: newReview },
+      { status: 201 }
+    );
+  }),
+
 
 
   http.get('/api/history', ({ request }) => {
@@ -150,17 +175,35 @@ export const handlers = [
     const userBookings = db.roomBookings.filter(b => b.userName === userName);
     const mappedBookings = userBookings.map(b => {
       const details = db.roomBookingDetails.filter(d => d.roomBookingId === b.roomBookingId);
+      
+      const isPast = new Date(b.dayEnd) < new Date();
+      let currentStatus = "Đang chờ duyệt";
+      let currentBg = "warning";
+
+      if (details.length > 0) {
+          if (isPast) {
+              currentStatus = "Đã trả phòng"; 
+              currentBg = "secondary";       
+          } else {
+              currentStatus = "Đã xác nhận";
+              currentBg = "success";
+          }
+      }
+
       return {
         id: b.roomBookingId,
         type: "ROOM",
         title: `Mã hóa đơn: 10000#${b.roomBookingId}`,
-        badgeText: details.length > 0 ? "Đã xác nhận" : "Đang chờ duyệt",
-        badgeBg: details.length > 0 ? "success" : "warning",
+        badgeText: currentStatus,
+        badgeBg: currentBg,
         subText: `Hình thức: ${b.bookingSource === 1 ? "Website trực tuyến" : "Tại quầy"}`,
         amount: b.totalAmount,
         raw: { ...b, details }
       };
     });
+
+
+    
 
     const userServices = db.roomBookingServices.filter(s => s.userName === userName);
     const walkInServices = userServices.filter(s => !db.roomBookings.some(b => b.roomBookingId === s.roomBookingId));
@@ -185,13 +228,11 @@ export const handlers = [
       raw: w
     }));
 
-    // 3. GỘP CHUNG VÀ SẮP XẾP THEO MÃ ID MỚI NHẤT
     const unifiedHistory = [...mappedBookings, ...mappedWalkIns].sort((a, b) => b.id - a.id);
 
     return HttpResponse.json({ data: unifiedHistory });
   }),
 
-  // 1. API ĐĂNG KÝ DỊCH VỤ - ĐỘNG 100% THEO TÀI KHOẢN ĐANG ĐĂNG NHẬP
   http.post('/api/services/book', async ({ request }) => {
     await delay(600);
     const payload = await request.json();
