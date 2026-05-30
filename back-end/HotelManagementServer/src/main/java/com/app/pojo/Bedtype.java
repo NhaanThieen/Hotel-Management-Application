@@ -5,7 +5,6 @@
 package com.app.pojo;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,7 +39,7 @@ public class Bedtype implements Serializable {
     @Size(max = 255)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bedTypeId")
+    @OneToMany(mappedBy = "bedTypeId")
     private List<Bed> bedList;
 
     public Bedtype() {

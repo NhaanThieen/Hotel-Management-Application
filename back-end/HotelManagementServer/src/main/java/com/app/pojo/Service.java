@@ -5,7 +5,6 @@
 package com.app.pojo;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -60,7 +59,7 @@ public class Service implements Serializable {
     private int stock;
     @Column(name = "isDeleted")
     private Short isDeleted;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceId")
+    @OneToMany(mappedBy = "serviceId")
     private List<Roombookingservice> roombookingserviceList;
     @JoinColumn(name = "serviceTypeId", referencedColumnName = "serviceTypeId")
     @ManyToOne(optional = false)

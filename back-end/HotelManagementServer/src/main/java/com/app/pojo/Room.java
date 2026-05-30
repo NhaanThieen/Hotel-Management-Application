@@ -5,7 +5,6 @@
 package com.app.pojo;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -73,10 +72,10 @@ public class Room implements Serializable {
     @Column(name = "thumbnail")
     private String thumbnail;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomId")
+    @OneToMany(mappedBy = "roomId")
     private List<Bed> bedList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomId")
+    @OneToMany(mappedBy = "roomId")
     private List<Roomimage> roomimageList;
     
     @JoinColumn(name = "roomStatusId", referencedColumnName = "roomStatusId")
@@ -87,7 +86,7 @@ public class Room implements Serializable {
     @ManyToOne(optional = false)
     private Roomtype roomTypeId;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roomId")
+    @OneToMany(mappedBy = "roomId")
     private List<Roombookingdetail> roombookingdetailList;
 
     public Room() {

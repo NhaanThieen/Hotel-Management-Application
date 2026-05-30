@@ -109,6 +109,10 @@ public class RoomServiceImpl implements RoomService {
         room.setIsDeleted((short) 0);
         room.setVersion(0);
 
+        // Lưu Bed cho phòng
+        
+        
+        
         // Save room
         this.roomRepository.saveRoom(room);
     }

@@ -5,7 +5,6 @@
 package com.app.pojo;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -72,13 +71,13 @@ public class User implements Serializable {
     @Size(max = 65535)
     @Column(name = "avatar")
     private String avatar;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(mappedBy = "userId")
     private List<Roombooking> roombookingList;
     @OneToMany(mappedBy = "staffId")
     private List<Roombooking> roombookingList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userPaidId")
+    @OneToMany(mappedBy = "userPaidId")
     private List<Receipt> receiptList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "staffId")
+    @OneToMany(mappedBy = "staffId")
     private List<Receipt> receiptList1;
     @JoinColumn(name = "memberTierId", referencedColumnName = "memberTierId")
     @ManyToOne

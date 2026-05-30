@@ -5,7 +5,6 @@
 package com.app.pojo;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,9 +42,9 @@ public class Paymentmethod implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "paymentMethodId")
+    @OneToMany(mappedBy = "paymentMethodId")
     private List<Roombooking> roombookingList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "paymentMethodId")
+    @OneToMany(mappedBy = "paymentMethodId")
     private List<Receipt> receiptList;
 
     public Paymentmethod() {
