@@ -8,15 +8,22 @@ import com.app.dto.request.RoomCreateDTO;
 import com.app.dto.request.RoomSearchCriteria;
 import com.app.dto.response.ListRoomAdminRoomPageDTO;
 import com.app.pojo.Bed;
+import com.app.pojo.Bedtype;
 import com.app.pojo.Room;
 import com.app.pojo.Roomstatus;
 import com.app.pojo.Roomtype;
 import com.app.repositories.RoomRepository;
 import com.app.repositories.RoomStatusRepository;
 import com.app.repositories.RoomTypeRepository;
+import com.app.services.BedService;
+import com.app.services.BedTypeService;
 import com.app.services.RoomService;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +42,12 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     private RoomTypeRepository roomTypeRepository;
+
+    @Autowired
+    private BedTypeService bedTypeService;
+
+    @Autowired
+    private BedService bedService;
 
     @Override
     public ListRoomAdminRoomPageDTO getRooms(RoomSearchCriteria roomData) {
@@ -109,11 +122,40 @@ public class RoomServiceImpl implements RoomService {
         room.setIsDeleted((short) 0);
         room.setVersion(0);
 
-        // Lưu Bed cho phòng
-        
-        
-        
         // Save room
         this.roomRepository.saveRoom(room);
+
+        // Lưu bed
+        if (roomDTO.getBeds() != null && !roomDTO.getBeds().isEmpty()) {
+            // Lấy danh sách bed có dữ liệu trong dto
+            List<RoomCreateDTO.BedRoomDTO> activeBeds = roomDTO.getBeds().stream().
+                    filter(b -> b.getQuantity() != null && b.getQuantity() > 0).
+                    toList();
+
+            if (!activeBeds.isEmpty()) {
+                // Lấy id của bedType trong Dto
+                Set<Integer> bedTypeIds = new HashSet<>(activeBeds.stream().
+                        map(b -> b.getBedTypeId()).toList());
+                // Lấy bedType từ db
+                List<Bedtype> bedTypes = this.bedTypeService.getBedTypesByListId(bedTypeIds);
+                // Chuyển đổi list bedType thành Map cho tốc độ truy vấn cao
+                Map<Integer, Bedtype> bedTypeMap = bedTypes.stream().
+                        collect(Collectors.toMap(b -> b.getBedTypeId(), b -> b));
+                // Lập danh sách các bed trong room
+                List<Bed> entityBeds = new ArrayList<>();
+                for (RoomCreateDTO.BedRoomDTO bedDto : activeBeds) {
+                    Bedtype bt = bedTypeMap.get(bedDto.getBedTypeId());
+                    if (bt != null) {
+                        Bed bed = new Bed();
+                        bed.setAmount(bedDto.getQuantity());
+                        bed.setBedTypeId(bt);
+                        bed.setRoomId(room);
+                        entityBeds.add(bed);
+                    }
+                }
+                // Lưu bed cho room
+                this.bedService.saveAll(entityBeds);
+            }
+        }
     }
 }

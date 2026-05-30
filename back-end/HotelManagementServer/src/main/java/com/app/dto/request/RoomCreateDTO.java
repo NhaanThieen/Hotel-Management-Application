@@ -1,5 +1,5 @@
-
 package com.app.dto.request;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -9,80 +9,77 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
-
-class BedRoomDTO{
-    
-    @NotNull(message = "Loại giường không được trống")
-    private Integer bedTypeId;
-    
-    @NotNull(message = "Số lượng loại giường không được trống")
-    @Min(value = 0, message = "Số lượng loại giường không được âm")
-    private Integer quantity;
-
-    public BedRoomDTO() {
-    }
-
-    /**
-     * @return the bedTypeId
-     */
-    public Integer getBedTypeId() {
-        return bedTypeId;
-    }
-
-    /**
-     * @param bedTypeId the bedTypeId to set
-     */
-    public void setBedTypeId(Integer bedTypeId) {
-        this.bedTypeId = bedTypeId;
-    }
-
-    /**
-     * @return the quantity
-     */
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    /**
-     * @param quantity the quantity to set
-     */
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-}
-
 public class RoomCreateDTO {
-    
+
+    public static class BedRoomDTO {
+
+        @NotNull(message = "Loại giường không được trống")
+        private Integer bedTypeId;
+
+        @NotNull(message = "Số lượng loại giường không được trống")
+        @Min(value = 0, message = "Số lượng loại giường không được âm")
+        private Integer quantity;
+
+        public BedRoomDTO() {
+        }
+
+        /**
+         * @return the bedTypeId
+         */
+        public Integer getBedTypeId() {
+            return bedTypeId;
+        }
+
+        /**
+         * @param bedTypeId the bedTypeId to set
+         */
+        public void setBedTypeId(Integer bedTypeId) {
+            this.bedTypeId = bedTypeId;
+        }
+
+        /**
+         * @return the quantity
+         */
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        /**
+         * @param quantity the quantity to set
+         */
+        public void setQuantity(Integer quantity) {
+            this.quantity = quantity;
+        }
+    }
+
     // Sử dụng kiểu Wrapper để nếu không có giá trị thì sẽ là null thay vì 0 hay rỗng như kiểu nguyên thủy
     private Integer roomId;
-    
+
     // NotBlank chỉ dành cho xử lý chuỗi
     @NotBlank(message = "Tên phòng không được trống")
     private String name;
-    
+
     @NotNull(message = "Giá phòng không được trống")
     @Min(value = 0, message = "Giá phòng không được âm")
     private BigDecimal price;
-    
+
     @NotNull(message = "Loại phòng không được trống")
     private Integer typeId;
-    
+
     @NotNull(message = "Trạng thái phòng không được trống")
     private Integer statusId;
-        
+
     @NotNull(message = "Số lượng người trong phòng không được trống")
     private Integer capacity;
-    
+
     @Valid
     private List<BedRoomDTO> beds = new ArrayList<>();
-    
+
     private MultipartFile imageFile;
 
     public RoomCreateDTO() {
     }
 
-    
-    
     /**
      * @return the roomId
      */
