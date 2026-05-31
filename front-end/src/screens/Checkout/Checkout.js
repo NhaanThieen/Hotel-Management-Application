@@ -63,6 +63,8 @@ const Checkout = () => {
         const userStr = localStorage.getItem("user");
         const user = userStr ? JSON.parse(userStr) : null;
 
+        const finalAmount = bookingSummary.totalAmount - discountMoney;
+
         const payload = {
             roomId: bookingSummary.roomId,
             roomName: bookingSummary.roomName,
@@ -72,9 +74,9 @@ const Checkout = () => {
             userName: user ? user.userName : "Ẩn danh",
             voucherDiscountMoney: discountMoney,
             depositAmount: bookingSummary.depositAmount,
-            totalAmount: bookingSummary.totalAmount - discountMoney,
+            totalAmount: finalAmount,
             bookingSource: 1,
-            note: "Khách thanh toán trực tuyến qua phương thức: " + (paymentMethod === "QR_BANK" ? "Chuyển khoản QR" : "Tiền mặt")
+            note: "Khách thanh toán trực tuyến qua phương thức: " + paymentMethod
         };
 
         try {
@@ -86,8 +88,30 @@ const Checkout = () => {
             const result = await res.json();
             if (!res.ok) throw new Error(result.message);
 
-            toast.success(result.message);
-            navigate(`/receipt/${result.data.roomBookingId}`); 
+            const createdBookingId = result.data.roomBookingId;
+
+            if (paymentMethod === "VNPAY") {
+                toast.success("Đang chuyển hướng sang cổng VNPay...");
+
+                const vnpRes = await fetch("/api/payment/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        amount: finalAmount,
+                        bookingId: createdBookingId
+                    })
+                });
+                const vnpData = await vnpRes.json();
+
+                if (vnpData.url) {
+                    navigate(vnpData.url);
+                    // window.location.href = vnpData.url;
+                }
+            } else {
+                toast.success(result.message);
+                navigate(`/receipt/${createdBookingId}`);
+            }
+
         } catch (error) {
             toast.error(error.message || "Xảy ra sự cố trong quá trình khởi tạo đơn phòng.");
         } finally {
@@ -113,7 +137,7 @@ const Checkout = () => {
                             </Card.Title>
 
                             <Stack gap={3} className="mb-4">
-                                <Card 
+                                <Card
                                     className={`checkout-payment-card p-3 ${paymentMethod === "QR_BANK" ? "active" : ""}`}
                                     onClick={() => setPaymentMethod("QR_BANK")}
                                 >
@@ -124,16 +148,16 @@ const Checkout = () => {
                                                 <Stack as="span" className="text-white fw-bold">Chuyển khoản Ngân hàng điện tử (Quét mã QR)</Stack>
                                             </Stack>
                                         </Stack>
-                                        <Form.Check 
-                                            type="radio" 
-                                            checked={paymentMethod === "QR_BANK"} 
+                                        <Form.Check
+                                            type="radio"
+                                            checked={paymentMethod === "QR_BANK"}
                                             onChange={() => setPaymentMethod("QR_BANK")}
                                             className="custom-gold-radio"
                                         />
                                     </Stack>
                                 </Card>
 
-                                <Card 
+                                <Card
                                     className={`checkout-payment-card p-3 ${paymentMethod === "CASH" ? "active" : ""}`}
                                     onClick={() => setPaymentMethod("CASH")}
                                 >
@@ -144,10 +168,33 @@ const Checkout = () => {
                                                 <Stack as="span" className="text-white fw-bold">Thanh toán bằng tiền mặt tại quầy lễ tân</Stack>
                                             </Stack>
                                         </Stack>
-                                        <Form.Check 
-                                            type="radio" 
-                                            checked={paymentMethod === "CASH"} 
+                                        <Form.Check
+                                            type="radio"
+                                            checked={paymentMethod === "CASH"}
                                             onChange={() => setPaymentMethod("CASH")}
+                                            className="custom-gold-radio"
+                                        />
+                                    </Stack>
+                                </Card>
+                                <Card
+                                    className={`checkout-payment-card p-3 ${paymentMethod === "VNPAY" ? "active" : ""}`}
+                                    onClick={() => setPaymentMethod("VNPAY")}
+                                >
+                                    <Stack direction="horizontal" className="justify-content-between align-items-center">
+                                        <Stack direction="horizontal" gap={3} className="align-items-center">
+                                            <Image
+                                                src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                                                style={{ height: "30px", objectFit: "contain", backgroundColor: "white", padding: "2px", borderRadius: "4px" }}
+                                                alt="VNPay"
+                                            />
+                                            <Stack>
+                                                <Stack as="span" className="text-white fw-bold">Thanh toán trực tuyến qua VNPay</Stack>
+                                            </Stack>
+                                        </Stack>
+                                        <Form.Check
+                                            type="radio"
+                                            checked={paymentMethod === "VNPAY"}
+                                            onChange={() => setPaymentMethod("VNPAY")}
                                             className="custom-gold-radio"
                                         />
                                     </Stack>
@@ -157,15 +204,17 @@ const Checkout = () => {
                             {paymentMethod === "QR_BANK" && (
                                 <Stack className="align-items-center text-center p-4 checkout-receipt-panel border border-secondary">
                                     <Stack className="checkout-qr-wrapper mb-3 justify-content-center align-items-center">
-                                        <Image 
-                                            src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=OUHotelPayment" 
-                                            alt="Mã QR Thanh Toán" 
+                                        <Image
+                                            src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=OUHotelPayment"
+                                            alt="Mã QR Thanh Toán"
                                         />
                                     </Stack>
                                     <Stack as="span" className="text-gold fw-bold mb-1">Mã QR Thanh Toán Tự Động</Stack>
                                     <Stack as="span" className="text-white-50 small">Nội dung chuyển khoản: <Stack as="strong" className="text-white font-monospace">Tên phòng - Tiền cọc - Họ và tên khách hàng - Thời gian lưu trú</Stack></Stack>
                                 </Stack>
                             )}
+
+
                         </Card.Body>
                     </Card>
                 </Col>
@@ -191,7 +240,7 @@ const Checkout = () => {
                                 <Form.Group>
                                     <Form.Label className="text-white-50 small mb-1">Mã ưu đãi giảm giá (Voucher)</Form.Label>
                                     <InputGroup>
-                                        <Form.Control 
+                                        <Form.Control
                                             type="text"
                                             disabled={isVoucherApplied}
                                             className="custom-dark-input bg-transparent text-white border-secondary py-2 input-no-border-right"
@@ -232,8 +281,8 @@ const Checkout = () => {
                                 </Stack>
                             </Stack>
 
-                            <Button 
-                                variant="warning" 
+                            <Button
+                                variant="warning"
                                 disabled={loading}
                                 onClick={handleConfirmPayment}
                                 className="w-100 fw-bold py-3 rounded-pill text-dark shadow btn-luxury-glow"

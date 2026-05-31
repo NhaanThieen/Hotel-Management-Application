@@ -557,6 +557,39 @@ http.post('/api/reviews', async ({ request }) => {
     return HttpResponse.json({ message: 'Thanh toán và xuất hóa đơn thành công', data: newInvoice })
   }),
 
+
+
+  http.post('/api/payment/create', async ({ request }) => {
+    await delay(800); 
+    
+    const payload = await request.json();
+    const { amount, bookingId, note } = payload;
+
+    if (!amount || !bookingId) {
+        return HttpResponse.json(
+            { status: "ERROR", message: "Thiếu thông tin số tiền hoặc mã đơn đặt phòng!" }, 
+            { status: 400 }
+        );
+    }
+
+    const bookingIndex = db.roomBookings.findIndex(b => b.roomBookingId === bookingId);
+    if (bookingIndex !== -1) {
+        console.log(`--> MSW/Backend: Đã chuyển trạng thái đơn ${bookingId} sang PENDING`);
+    }
+
+    const vnp_ReturnUrl = `http://localhost:3000/receipt/${bookingId}`; 
+
+    
+    // URL thật sẽ có dạng: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=...&vnp_SecureHash=...
+    const mockSecureUrlForFrontendTest = `/receipt/${bookingId}?vnp_Amount=${amount * 100}&vnp_BankCode=NCB&vnp_ResponseCode=00&vnp_TransactionNo=${Math.floor(Math.random() * 1000000)}`;
+
+    return HttpResponse.json({ 
+        status: "OK",
+        message: "Khởi tạo URL thanh toán VNPay thành công",
+        url: mockSecureUrlForFrontendTest 
+    }, { status: 200 });
+  }),
+
   http.get('/api/rooms', ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get('page') || '1', 10);
