@@ -23,14 +23,14 @@
         <div class="container-fluid py-2">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold m-0"><i class="fa-solid fa-bed me-2 text-primary"></i>Danh Sách Phòng</h4>
-                <a th:href="@{/admin/addOrUpdateRoom}" class="btn btn-primary shadow-sm">
+                <a th:href="@{/admin/rooms/addOrUpdateRoom}" class="btn btn-primary shadow-sm">
                     <i class="fa-solid fa-plus me-1"></i> Thêm Phòng Mới
                 </a>
             </div>
 
             <div class="card shadow-sm border-0 mb-4 overflow-hidden">
                 <div class="card-body bg-light rounded">
-                    <form th:action="@{/admin/rooms}" method="GET" class="row g-3 align-items-end">
+                    <form th:action="@{/admin/rooms/}" method="GET" class="row g-3 align-items-end">
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold text-secondary">Tìm kiếm</label>
                             <div class="input-group">
@@ -158,7 +158,7 @@
                                     </td>
 
                                     <td class="text-center pe-4">
-                                        <a th:href="@{/admin/addOrUpdateRoom}" class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa">
+                                        <a th:href="@{/admin/rooms/addOrUpdateRoom}" class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         <button class="btn btn-sm btn-outline-danger" title="Xóa">
@@ -180,7 +180,7 @@
                         <li th:class="|page-item ${roomSearchResponse.currentPage <= 1 ? 'disabled' : ''}|">
                             <a class="page-link rounded-circle d-flex align-items-center justify-content-center" 
                                style="width: 32px; height: 32px;"
-                               th:href="@{/admin/rooms(name=${searchCriteria.name}, typeId=${searchCriteria.typeId}, statusId=${searchCriteria.statusId}, page=${roomSearchResponse.currentPage - 1})}" 
+                               th:href="@{/admin/rooms/(name=${searchCriteria.name}, typeId=${searchCriteria.typeId}, statusId=${searchCriteria.statusId}, page=${roomSearchResponse.currentPage - 1})}" 
                                aria-label="Trước">
                                 <i class="fa-solid fa-chevron-left small"></i>
                             </a>
@@ -194,7 +194,7 @@
                         <li th:class="|page-item ${roomSearchResponse.rooms.isEmpty() ? 'disabled' : ''}|">
                             <a class="page-link rounded-circle d-flex align-items-center justify-content-center" 
                                style="width: 32px; height: 32px;"
-                               th:href="@{/admin/rooms(name=${searchCriteria.name}, typeId=${searchCriteria.typeId}, statusId=${searchCriteria.statusId}, page=${roomSearchResponse.currentPage + 1})}" 
+                               th:href="@{/admin/rooms/(name=${searchCriteria.name}, typeId=${searchCriteria.typeId}, statusId=${searchCriteria.statusId}, page=${roomSearchResponse.currentPage + 1})}" 
                                aria-label="Sau">
                                 <i class="fa-solid fa-chevron-right small"></i>
                             </a>

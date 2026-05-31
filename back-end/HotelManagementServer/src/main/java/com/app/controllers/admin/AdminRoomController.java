@@ -1,6 +1,5 @@
 package com.app.controllers.admin;
 
-import com.app.configs.SidebarConfig;
 import com.app.dto.request.RoomCreateDTO;
 import com.app.dto.request.RoomSearchCriteria;
 import com.app.dto.response.BedTypeResponse;
@@ -12,12 +11,10 @@ import com.app.services.RoomService;
 import com.app.services.RoomStatusService;
 import com.app.services.RoomTypeService;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,12 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@ControllerAdvice(basePackages = "com.app.controllers.admin")
-@RequestMapping("/admin")
-public class AdminPageController {
-
-    @Autowired
-    private SidebarConfig sidebarConfig;
+@RequestMapping("/admin/rooms")
+public class AdminRoomController {
 
     @Autowired
     private RoomService roomService;
@@ -44,18 +37,13 @@ public class AdminPageController {
     @Autowired
     private BedTypeService bedTypeService;
 
-    @ModelAttribute
-    public void commonResponse(Model model) {
-        List functions = sidebarConfig.getFuction();
-        model.addAttribute("sidebarMenu", functions);
+    private void loadBasicRoomData(Model model) {
+        model.addAttribute("roomTypeResponse", new RoomTypeResponse(this.roomTypeService.getRoomTypes()));
+        model.addAttribute("roomStatusResponse", new RoomStatusResponse(this.roomStatusService.getRoomStatus()));
+        model.addAttribute("bedTypeResponse", new BedTypeResponse(this.bedTypeService.getBedTypes()));
     }
 
     @GetMapping("/")
-    public String createHomepageAdmin(Model model) {
-        return "HomePageAdmin";
-    }
-
-    @GetMapping("/rooms")
     // Sử dụng @ModelAttribute không cần quan tâm dữ liệu gửi từ URL hay là trong body.
     // Tại vì khi sử dụng View (SSR) dữ liệu gửi lên theo chuẩn HTML Form, tất cả name
     // và value đều để chung vào 1 chỗ. Spring tự vào đó lấy dữ liệu cho DTO.
@@ -72,12 +60,6 @@ public class AdminPageController {
         model.addAttribute("roomStatusResponse", roomStatusResponse);
 
         return "RoomsPageAdmin";
-    }
-
-    private void loadBasicRoomData(Model model) {
-        model.addAttribute("roomTypeResponse", new RoomTypeResponse(this.roomTypeService.getRoomTypes()));
-        model.addAttribute("roomStatusResponse", new RoomStatusResponse(this.roomStatusService.getRoomStatus()));
-        model.addAttribute("bedTypeResponse", new BedTypeResponse(this.bedTypeService.getBedTypes()));
     }
 
     @GetMapping("/addOrUpdateRoom")
@@ -118,7 +100,7 @@ public class AdminPageController {
         try {
             this.roomService.createRooms(roomCreateDTO);
             redirectAttributes.addFlashAttribute("successMsg", "Thêm phòng thành công: " + roomCreateDTO.getName());
-            return "redirect:/admin/rooms";
+            return "redirect:/admin/rooms/";
         } catch (Exception e) {
             // Cần dùng model để quăng lỗi này ra View thay vì crash server
             model.addAttribute("errorMsg", e.getMessage());

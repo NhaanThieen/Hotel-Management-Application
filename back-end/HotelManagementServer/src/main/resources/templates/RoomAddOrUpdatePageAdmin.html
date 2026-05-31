@@ -22,7 +22,7 @@
                 <h4 class="fw-bold m-0 text-primary">
                     <i class="fa-solid fa-person-shelter me-2"></i>Thông Tin Phòng
                 </h4>
-                <a th:href="@{/admin/rooms}" class="btn btn-outline-secondary btn-sm">
+                <a th:href="@{/admin/rooms/}" class="btn btn-outline-secondary btn-sm">
                     <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
                 </a>
             </div>
@@ -37,7 +37,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
 
-                    <form th:action="@{/admin/addOrUpdateRoom/process}" method="POST" th:object="${roomForm}" enctype="multipart/form-data">
+                    <form th:action="@{/admin/rooms/addOrUpdateRoom/process}" method="POST" th:object="${roomForm}" enctype="multipart/form-data">
 
                         <input th:field="*{roomId}" type="hidden" name="id" value="" />
 
