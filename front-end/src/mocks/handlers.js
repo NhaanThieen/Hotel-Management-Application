@@ -590,6 +590,21 @@ http.post('/api/reviews', async ({ request }) => {
     }, { status: 200 });
   }),
 
+  http.post('/api/payment/zalopay/create', async ({ request }) => {
+    await delay(1000); 
+    const payload = await request.json();
+    const bookingId = payload.bookingId || Math.floor(Math.random() * 1000);
+
+    const mockReturnUrl = `/receipt/${bookingId}?status=1&app_trans_id=260531_${bookingId}`;
+
+    console.log("--> MSW: Đã tạo link giả lập ZaloPay:", mockReturnUrl);
+
+    return HttpResponse.json({ 
+        status: "OK",
+        url: mockReturnUrl 
+    }, { status: 200 });
+  }),
+
   http.get('/api/rooms', ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get('page') || '1', 10);

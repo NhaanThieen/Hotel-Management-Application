@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Stack, Badge, Button } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
+import { Container, Row, Col, Card, Stack, Badge, Button, Alert } from "react-bootstrap";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import MySpinner from "../../components/MySpinner";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -11,27 +11,36 @@ const ReceiptDetail = () => {
     const navigate = useNavigate();
     const [receipt, setReceipt] = useState(null);
     const [loading, setLoading] = useState(true);
-
-
+    const [searchParams] = useSearchParams();
+    const [paymentStatus, setPaymentStatus] = useState(null);
     const handleExportPDF = async () => {
-    const element = document.getElementById("receipt-content"); 
-    const canvas = await html2canvas(element, { 
-        scale: 2, 
-        backgroundColor: '#121212' // Ép màu nền tối
-    });
-    const imgData = canvas.toDataURL('image/png');
-    
-    // Tạo PDF khổ A4
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = 210; 
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    pdf.save(`Hoa_Don_${id}.pdf`);
-};
+        const element = document.getElementById("receipt-content");
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            backgroundColor: '#121212' 
+        });
+        const imgData = canvas.toDataURL('image/png');
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save(`Hoa_Don_${id}.pdf`);
+    };
 
 
     useEffect(() => {
+
+        const vnpResponse = searchParams.get("vnp_ResponseCode");
+        const zaloResponse = searchParams.get("status");
+
+        if (vnpResponse === "00" || zaloResponse === "1") {
+            setPaymentStatus("success");
+        } else if (vnpResponse || zaloResponse) {
+            setPaymentStatus("failed");
+        }
+
         fetch(`/api/receipts/${id}`)
             .then(res => {
                 if (!res.ok) throw new Error("Biên lai không tồn tại trên hệ thống.");
@@ -68,6 +77,19 @@ const ReceiptDetail = () => {
                                 <Stack as="span" className="text-white-50 small">Hotline: +84 (0) 28 3930 0077</Stack>
                             </Stack>
 
+                            {paymentStatus === "success" && (
+                                <Alert variant="success" className="mx-4 mb-4 d-flex align-items-center justify-content-center fw-bold border-0 shadow-sm" style={{backgroundColor: "rgba(25, 135, 84, 0.15)", color: "#28a745"}}>
+                                    <Stack as="i" className="bi bi-check-circle-fill fs-5 me-2"></Stack>
+                                    Thanh toán trực tuyến thành công! Cảm ơn bạn.
+                                </Alert>
+                            )}
+
+                            {paymentStatus === "failed" && (
+                                <Alert variant="danger" className="mx-4 mb-4 d-flex align-items-center justify-content-center fw-bold border-0 shadow-sm" style={{backgroundColor: "rgba(220, 53, 69, 0.15)", color: "#dc3545"}}>
+                                    <Stack as="i" className="bi bi-x-circle-fill fs-5 me-2"></Stack>
+                                    Giao dịch thanh toán đã bị hủy hoặc thất bại.
+                                </Alert>
+                            )}
                             <Row className="g-4 mb-5 text-white-50 small">
                                 <Col md={6}>
                                     <Stack gap={2}>

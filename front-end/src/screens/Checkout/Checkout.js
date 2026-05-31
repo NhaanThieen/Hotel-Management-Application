@@ -90,26 +90,29 @@ const Checkout = () => {
 
             const createdBookingId = result.data.roomBookingId;
 
-            if (paymentMethod === "VNPAY") {
+           if (paymentMethod === "VNPAY") {
                 toast.success("Đang chuyển hướng sang cổng VNPay...");
-
                 const vnpRes = await fetch("/api/payment/create", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        amount: finalAmount,
-                        bookingId: createdBookingId
-                    })
+                    body: JSON.stringify({ amount: finalAmount, bookingId: createdBookingId })
                 });
                 const vnpData = await vnpRes.json();
+                if (vnpData.url) navigate(vnpData.url); 
 
-                if (vnpData.url) {
-                    navigate(vnpData.url);
-                    // window.location.href = vnpData.url;
-                }
+            } else if (paymentMethod === "ZALOPAY") {
+                toast.success("Đang chuyển hướng sang cổng ZaloPay...");
+                const zaloRes = await fetch("/api/payment/zalopay/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ amount: finalAmount, bookingId: createdBookingId })
+                });
+                const zaloData = await zaloRes.json();
+                if (zaloData.url) navigate(zaloData.url); 
+                
             } else {
                 toast.success(result.message);
-                navigate(`/receipt/${createdBookingId}`);
+                navigate(`/receipt/${createdBookingId}`); 
             }
 
         } catch (error) {
@@ -195,6 +198,29 @@ const Checkout = () => {
                                             type="radio"
                                             checked={paymentMethod === "VNPAY"}
                                             onChange={() => setPaymentMethod("VNPAY")}
+                                            className="custom-gold-radio"
+                                        />
+                                    </Stack>
+                                </Card>
+                                <Card 
+                                    className={`checkout-payment-card p-3 ${paymentMethod === "ZALOPAY" ? "active" : ""}`}
+                                    onClick={() => setPaymentMethod("ZALOPAY")}
+                                >
+                                    <Stack direction="horizontal" className="justify-content-between align-items-center">
+                                        <Stack direction="horizontal" gap={3} className="align-items-center">
+                                            <Image 
+                                                src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png" 
+                                                style={{ height: "30px", objectFit: "contain", backgroundColor: "white", padding: "2px", borderRadius: "4px" }} 
+                                                alt="ZaloPay" 
+                                            />
+                                            <Stack>
+                                                <Stack as="span" className="text-white fw-bold">Thanh toán trực tuyến qua ZaloPay</Stack>
+                                            </Stack>
+                                        </Stack>
+                                        <Form.Check 
+                                            type="radio" 
+                                            checked={paymentMethod === "ZALOPAY"} 
+                                            onChange={() => setPaymentMethod("ZALOPAY")}
                                             className="custom-gold-radio"
                                         />
                                     </Stack>
