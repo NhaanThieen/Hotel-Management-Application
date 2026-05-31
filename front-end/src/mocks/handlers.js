@@ -251,31 +251,24 @@ http.post('/api/reviews', async ({ request }) => {
 
     return HttpResponse.json({
       message: "Đăng ký thành công!",
-      receiptId: newServiceRecord.roomBookingId // Trả về đúng ID để chuyển hướng
+      receiptId: newServiceRecord.roomBookingId 
     }, { status: 200 });
   }),
 
-  // 2. API XUẤT BIÊN LAI CHI TIẾT - TRUY VẤN DỮ LIỆU ĐỘNG TỪ DB (KHÔNG HARDCODE STRING)
   http.get('/api/receipts/:id', async ({ params }) => {
     await delay(500);
     const receiptId = parseInt(params.id, 10);
 
-    // Truy vấn bảng trung gian lấy các dịch vụ thuộc về mã biên lai này
     const servicesUsed = db.roomBookingServices.filter(s => s.roomBookingId === receiptId);
     const totalServicesAmount = servicesUsed.reduce((sum, s) => sum + (s.quantity * s.unitPriceAtUse), 0);
 
-    // Kiểm tra xem biên lai này thuộc về đơn đặt phòng nào không
     const booking = db.roomBookings.find(b => b.roomBookingId === receiptId);
 
-    // ==========================================
-    // NHÁNH 1: NẾU LÀ USER ĐẶT DỊCH VỤ LẺ (VÃNG LAI/KHÔNG CÓ PHÒNG)
-    // ==========================================
     if (!booking) {
       if (servicesUsed.length === 0) {
         return HttpResponse.json({ message: "Hóa đơn trống hoặc không tồn tại" }, { status: 404 });
       }
 
-      // Tìm thông tin danh tính thật của User trong bảng users bằng khóa ngoại userName của dịch vụ
       const targetUserName = servicesUsed[0].userName;
       const userProfile = db.users.find(u => u.userName === targetUserName) || {};
 
@@ -299,9 +292,7 @@ http.post('/api/reviews', async ({ request }) => {
       });
     }
 
-    // ==========================================
-    // NHÁNH 2: NẾU LÀ USER CÓ PHÒNG LƯU TRÚ XỊN CHUẨN
-    // ==========================================
+
     const userProfile = db.users.find(u => u.userName === booking.userName) || {};
     const bookingDetails = db.roomBookingDetails.filter(d => d.roomBookingId === receiptId);
     const mainDetail = bookingDetails[0] || {};
@@ -317,7 +308,6 @@ http.post('/api/reviews', async ({ request }) => {
     const totalRoomAmount = roomPricePerNight * totalNights;
     const subTotal = totalRoomAmount + totalServicesAmount;
 
-    // Tính phần trăm chiết khấu VIP động dựa vào hạng thẻ thực tế của User trong DB
     let vipDiscountAmount = 0;
     if (userProfile.memberTierId) {
       const tier = db.memberTiers.find(t => t.memberTierId === userProfile.memberTierId);
@@ -371,7 +361,6 @@ http.post('/api/reviews', async ({ request }) => {
   }),
 
   http.put('/api/customer/profile', async ({ request }) => {
-    // 1. Thêm log này ngay dòng đầu tiên
     console.log("-> Đã chặn được request PUT tới /api/customer/profile");
     
     await delay(500);
@@ -444,6 +433,47 @@ http.post('/api/reviews', async ({ request }) => {
     db.users.push(newUser)
 
     return HttpResponse.json({ message: 'Đăng ký tài khoản thành công!', data: newUser }, { status: 201 })
+  }),
+
+  http.post('/api/auth/google', async ({ request }) => {
+    await delay(600); 
+    const payload = await request.json();
+    const token = payload.token;
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    
+    const googleData = JSON.parse(jsonPayload);
+    
+    const realEmail = googleData.email;
+    const realName = googleData.name;
+    const realAvatar = googleData.picture;
+
+    let existingUser = db.users.find(u => u.userName === realEmail);
+
+    if (!existingUser) {
+        existingUser = {
+            userId: db.users.length + 1,
+            name: realName,          
+            userName: realEmail,      
+            phone: 'Chưa cập nhật', 
+            password: '', 
+            role: 'KHACH_HANG',
+            memberTierId: 1, 
+            avataURL: realAvatar      
+        };
+        db.users.push(existingUser);
+        console.log("--> MSW: Đã tạo tài khoản với data thật từ Google:", existingUser);
+    }
+
+    return HttpResponse.json({
+      message: 'Đăng nhập Google thành công!',
+      token: 'fake-jwt-token-google-99999',
+      user: existingUser
+    }, { status: 200 });
   }),
 
 

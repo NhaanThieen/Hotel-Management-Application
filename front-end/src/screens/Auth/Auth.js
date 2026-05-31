@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Form, Button, Stack, Tabs, Tab } from "react
 import { useNavigate } from "react-router-dom";
 import BackButton from "../../components/BackButton";
 import toast from "react-hot-toast";
+import { GoogleLogin } from '@react-oauth/google';
 
 const Auth = () => {
     const navigate = useNavigate();
@@ -31,6 +32,36 @@ const Auth = () => {
             navigate("/"); 
         } catch (error) {
             toast.error(error.message || "Có lỗi xảy ra khi đăng nhập");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        setLoading(true);
+        try {
+            // Gửi chuỗi JWT của Google xuống Spring Boot để xác minh
+            const res = await fetch("/api/auth/google", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: credentialResponse.credential })
+            });
+            const data = await res.json();
+            
+            if (!res.ok) throw new Error(data.message);
+            if (data.requiresRegistration) {
+                toast.success("Xác thực Google thành công! Vui lòng bổ sung thông tin.");
+                return; 
+            }
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            
+            toast.success("Đăng nhập bằng Google thành công!");
+            navigate("/"); 
+            
+        } catch (error) {
+            toast.error(error.message || "Lỗi kết nối với máy chủ xác thực.");
         } finally {
             setLoading(false);
         }
@@ -113,6 +144,22 @@ const Auth = () => {
                                     <Button variant="warning" type="submit" disabled={loading} className="w-100 fw-bold py-2 rounded-pill text-dark shadow btn-luxury-glow">
                                         {loading ? "ĐANG XỬ LÝ..." : "ĐĂNG NHẬP"}
                                     </Button>
+
+                                    <div className="d-flex align-items-center mb-3">
+                                        <hr className="flex-grow-1 border-secondary" />
+                                        <span className="mx-3 text-white-50 small">HOẶC</span>
+                                        <hr className="flex-grow-1 border-secondary" />
+                                    </div>
+                                    
+                                    <div className="d-flex justify-content-center">
+                                        <GoogleLogin
+                                            onSuccess={handleGoogleSuccess}
+                                            onError={() => toast.error('Popup Đăng nhập Google bị đóng hoặc xảy ra lỗi.')}
+                                            useOneTap={false}
+                                            theme="filled_black" 
+                                            shape="pill"
+                                        />
+                                    </div>
                                 </Form>
                             ) : (
                                 <Form onSubmit={handleRegisterSubmit}>

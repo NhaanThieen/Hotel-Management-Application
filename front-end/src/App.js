@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import MySpinner from './components/MySpinner';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -28,25 +28,28 @@ const App = () => {
     <BrowserRouter>
       <ErrorBoundary>
         <Toaster position="top-right" reverseOrder={false} />
-        <Suspense fallback={<MySpinner />}>
-          <div className="bg-overlay">
-            <Header />
+        
+        <GoogleOAuthProvider clientId="609164908222-rkgbsv9trsv3efdj8hieptmrm30gl2s6.apps.googleusercontent.com">
+          <Suspense fallback={<MySpinner />}>
+            <div className="bg-overlay">
+              <Header />
 
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/rooms" element={<RoomList />} />
-              <Route path="/rooms/:id" element={<RoomDetail />} />
-              <Route path="/login" element={<Auth />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/my-bookings" element={<MyBookings />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/receipt/:id" element={<ReceiptDetail />} />
-              <Route path="/services" element={<Services />} />
-            </Routes>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/rooms" element={<RoomList />} />
+                <Route path="/rooms/:id" element={<RoomDetail />} />
+                <Route path="/login" element={<Auth />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/my-bookings" element={<MyBookings />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/receipt/:id" element={<ReceiptDetail />} />
+                <Route path="/services" element={<Services />} />
+              </Routes>
 
-            <Footer />
-          </div>
-        </Suspense>
+              <Footer />
+            </div>
+          </Suspense>
+        </GoogleOAuthProvider>
       </ErrorBoundary>
     </BrowserRouter>
   );

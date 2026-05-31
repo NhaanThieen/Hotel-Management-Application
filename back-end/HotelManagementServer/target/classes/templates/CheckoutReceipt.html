@@ -1,0 +1,248 @@
+<head th:remove="all">
+    <title>Trả phòng & Thanh toán - Lễ tân</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/main.css">
+</head>
+
+<div xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{Base :: layout(~{:: #custom-menu-items}, ~{:: #custom-page-content})}">
+
+    <div id="custom-menu-items" th:remove="tag">
+        <div th:each="groupDto : ${sidebarMenu}" class="mb-1">
+            <button th:data-id="${groupDto.id}" onclick="toggleSubmenu(this.dataset.id)"
+                class="w-100 border-0 bg-transparent text-white-50 p-3 rounded hover-bg-effect d-flex align-items-center justify-content-between text-start">
+                <span class="d-flex align-items-center">
+                    <i th:class="|fa-solid ${groupDto.icon} me-3 text-info fs-5|" style="width: 24px;"></i>
+                    <span th:text="${groupDto.name}"></span>
+                </span>
+                <i class="fa-solid fa-chevron-down small text-white-50"></i>
+            </button>
+            <div th:id="${groupDto.id}" class="ps-4 d-none bg-black bg-opacity-25 rounded">
+                <a th:each="item : ${groupDto.sidebarItems}" th:text="${item.name}"
+                    class="nav-link text-white-50 py-2 px-3 rounded hover-bg-sub small" th:href="@{${item.url}}"></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="custom-page-content" th:remove="tag">
+        <div class="container-fluid py-3">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0 text-warning text-dark">
+                    <i class="fa-solid fa-file-invoice-dollar me-2"></i>Thanh toán & Trả phòng
+                </h4>
+                <a href="ActiveStayManagement.html"
+                    th:href="@{/reception/active-stay(bookingId=${bookingInfo.bookingId})}"
+                    class="btn btn-outline-secondary btn-sm">
+                    <i class="fa-solid fa-arrow-left me-1"></i>Quay lại
+                </a>
+            </div>
+
+            <form th:action="@{/reception/process-checkout}" method="POST" th:object="${checkoutForm}"
+                id="checkoutForm">
+                <input type="hidden" th:field="*{bookingId}" name="bookingId" value="1">
+
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="card shadow-sm border-0" id="invoice-capture"
+                            style="background-color: #fff; color: #333;">
+                            <div class="card-body p-5">
+
+                                <div class="text-center mb-4 pb-3 border-bottom border-2 border-dark">
+                                    <h2 class="fw-bold mb-1 text-uppercase"
+                                        th:text="${hotelConfig.name ?: 'Khách Sạn OU Green'}">Khách Sạn OU Green</h2>
+                                    <p class="mb-0 text-muted"
+                                        th:text="${hotelConfig.address ?: '97 Võ Văn Tần, Phường 6, Quận 3, TP.HCM'}">97
+                                        Võ Văn Tần, Phường 6, Quận 3, TP.HCM</p>
+                                    <p class="mb-0 text-muted"
+                                        th:text="'Hotline: ' + ${hotelConfig.hotline ?: '0123 456 789'}">Hotline: 0123
+                                        456 789</p>
+                                    <h4 class="mt-4 fw-bold">HÓA ĐƠN THANH TOÁN</h4>
+                                    <small>Mã hóa đơn: <span
+                                            th:text="${'INV-' + bookingInfo.bookingId}">INV-1024</span></small>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <div class="fw-bold">Khách hàng:</div>
+                                        <div th:text="${bookingInfo.guestName}">Lê Tam Thiện</div>
+                                        <div th:text="${bookingInfo.phone}">0901234567</div>
+                                    </div>
+                                    <div class="col-sm-6 text-sm-end">
+                                        <div class="fw-bold">Thông tin phòng:</div>
+                                        <div>Phòng: <strong class="fs-5" th:text="${bookingInfo.roomName}">102</strong>
+                                            (<span th:text="${bookingInfo.roomTypeName}">Phòng Đôi</span>)</div>
+                                        <div>Vào: <span
+                                                th:text="${#dates.format(bookingInfo.actualCheckIn, 'dd/MM/yyyy HH:mm')}">29/05/2026
+                                                14:00</span></div>
+                                        <div>Ra: <span
+                                                th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm')}">31/05/2026
+                                                12:00</span></div>
+                                    </div>
+                                </div>
+
+                                <table class="table table-bordered border-dark align-middle mb-4">
+                                    <thead class="table-light border-dark">
+                                        <tr>
+                                            <th>Hạng mục / Dịch vụ</th>
+                                            <th class="text-center">SL / Ngày</th>
+                                            <th class="text-end">Đơn giá</th>
+                                            <th class="text-end">Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold">Tiền thuê phòng</td>
+                                            <td class="text-center" th:text="${roomCharge.days}">2</td>
+                                            <td class="text-end"
+                                                th:text="${#numbers.formatDecimal(roomCharge.pricePerDay, 0, 'COMMA', 0, 'POINT')}">
+                                                500,000</td>
+                                            <td class="text-end fw-bold"
+                                                th:text="${#numbers.formatDecimal(roomCharge.totalRoomFee, 0, 'COMMA', 0, 'POINT')}">
+                                                1,000,000</td>
+                                        </tr>
+                                        <tr th:each="srv : ${usedServices}">
+                                            <td th:text="${srv.serviceName}">Nước suối</td>
+                                            <td class="text-center" th:text="${srv.quantity}">2</td>
+                                            <td class="text-end"
+                                                th:text="${#numbers.formatDecimal(srv.price, 0, 'COMMA', 0, 'POINT')}">
+                                                15,000</td>
+                                            <td class="text-end"
+                                                th:text="${#numbers.formatDecimal(srv.price * srv.quantity, 0, 'COMMA', 0, 'POINT')}">
+                                                30,000</td>
+                                        </tr>
+                                        <tr th:remove="all">
+                                            <td>Mì ly Hảo Hảo</td>
+                                            <td class="text-center">1</td>
+                                            <td class="text-end">15,000</td>
+                                            <td class="text-end">15,000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-7">
+                                        <table class="table table-borderless table-sm text-end">
+                                            <tr>
+                                                <td class="fw-semibold">Tổng tiền dịch vụ:</td>
+                                                <td
+                                                    th:text="${#numbers.formatDecimal(totalServiceFee, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                                    30,000 đ</td>
+                                            </tr>
+                                            <tr class="border-top border-dark border-2">
+                                                <td class="fw-bold fs-5">TỔNG CỘNG:</td>
+                                                <td class="fw-bold fs-5"
+                                                    th:text="${#numbers.formatDecimal(subTotal, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                                    1,030,000 đ</td>
+                                                <input type="hidden" id="rawSubTotal" th:value="${subTotal}"
+                                                    value="1030000">
+                                            </tr>
+                                            <tr class="text-danger">
+                                                <td>Đã đặt cọc:</td>
+                                                <td>- <span
+                                                        th:text="${#numbers.formatDecimal(bookingInfo.deposit, 0, 'COMMA', 0, 'POINT')}">500,000</span>
+                                                    đ</td>
+                                                <input type="hidden" id="rawDeposit" th:value="${bookingInfo.deposit}"
+                                                    value="500000">
+                                            </tr>
+                                            <tr class="text-success d-none" id="discountRow">
+                                                <td>Giảm giá:</td>
+                                                <td>- <span id="displayDiscount">0</span> đ</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-5 pt-3">
+                                    <p class="fst-italic mb-0">Cảm ơn quý khách và hẹn gặp lại!</p>
+                                    <small class="text-muted">Xin quý khách vui lòng kiểm tra lại hành lý trước khi rời
+                                        đi.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-white pt-3 pb-2 border-bottom">
+                                <h6 class="fw-bold text-primary m-0"><i class="fa-solid fa-tags me-2"></i>Chính sách &
+                                    Chiết khấu</h6>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="mb-3">
+                                    <label class="form-label small fw-semibold text-secondary">Mã Khuyến Mãi</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i
+                                                class="fa-solid fa-ticket text-warning"></i></span>
+                                        <input type="text" th:field="*{voucherCode}" name="voucherCode" id="voucherCode"
+                                            class="form-control text-uppercase" placeholder="Nhập mã...">
+                                        <button class="btn btn-outline-secondary" type="button" disabled>Áp
+                                            dụng</button>
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="mb-3">
+                                    <label class="form-label small fw-semibold text-secondary">Giảm giá thủ công</label>
+                                    <select th:field="*{manualDiscountReasonId}" name="manualDiscountReasonId"
+                                        class="form-select mb-2">
+                                        <option value="">-- Không áp dụng --</option>
+                                        <option th:each="reason : ${discountReasons}" th:value="${reason.id}"
+                                            th:text="${reason.name}">Phòng bị ồn / Điều hòa hỏng</option>
+                                    </select>
+                                    <div class="input-group">
+                                        <input type="number" th:field="*{manualDiscountAmount}"
+                                            name="manualDiscountAmount" id="manualDiscountAmount" class="form-control"
+                                            placeholder="Số tiền giảm..." min="0">
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0 border-top border-warning border-4">
+                            <div class="card-body p-4 bg-light">
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">Phương thức thanh toán</label>
+                                    <select th:field="*{paymentMethodId}" name="paymentMethodId"
+                                        class="form-select border-secondary" required>
+                                        <option value="1">Tiền mặt</option>
+                                        <option value="2">Chuyển khoản ngân hàng / QR</option>
+                                        <option value="3">Quẹt thẻ POS</option>
+                                    </select>
+                                </div>
+
+                                <div
+                                    class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white border border-warning-subtle rounded">
+                                    <span class="text-secondary fw-bold fs-5">Tổng tiền cần thanh toán:</span>
+                                    <h2 class="fw-bold text-danger m-0" id="finalAmountDue">--- đ</h2>
+                                </div>
+
+                                <div class="d-grid gap-3">
+                                    <a th:href="@{/api/invoices/export(bookingId=${bookingInfo.bookingId})}"
+                                        target="_blank" class="btn btn-outline-primary fw-semibold py-2"
+                                        th:classappend="${receipt == null ? 'disabled' : ''}">
+                                        <i class="fa-solid fa-file-pdf me-2"></i>In Hóa Đơn (PDF) từ Server - NOTE
+                                    </a>
+
+                                    <button type="submit" class="btn btn-warning text-dark fw-bold py-2 fs-5 shadow-sm">
+                                        <i class="fa-solid fa-check-to-slot me-2"></i>Xác nhận Thanh toán
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="../static/js/reception.js" th:src="@{/js/reception.js}"></script>
+</div>
