@@ -22,5 +22,7 @@
     <class>com.app.pojo.Roomimage</class>
     <class>com.app.pojo.Bed</class>
     <class>com.app.pojo.Bedtype</class>
+    <class>com.app.pojo.Usersocialaccount</class>
+    <class>com.app.pojo.Feedback</class>
   </persistence-unit>
 </persistence>

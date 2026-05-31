@@ -109,6 +109,8 @@ public class Roombooking implements Serializable {
     @ManyToOne
     private Voucher voucherId;
     @OneToMany(mappedBy = "roomBookingId")
+    private List<Feedback> feedbackList;
+    @OneToMany(mappedBy = "roomBookingId")
     private List<Roombookingdetail> roombookingdetailList;
 
     public Roombooking() {
@@ -260,6 +262,14 @@ public class Roombooking implements Serializable {
 
     public void setVoucherId(Voucher voucherId) {
         this.voucherId = voucherId;
+    }
+
+    public List<Feedback> getFeedbackList() {
+        return feedbackList;
+    }
+
+    public void setFeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
     }
 
     public List<Roombookingdetail> getRoombookingdetailList() {

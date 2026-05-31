@@ -33,6 +33,7 @@ import java.util.List;
     @NamedQuery(name = "User.findByUserId", query = "SELECT u FROM User u WHERE u.userId = :userId"),
     @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name"),
     @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username"),
+    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone"),
     @NamedQuery(name = "User.findByIsDeleted", query = "SELECT u FROM User u WHERE u.isDeleted = :isDeleted")})
@@ -54,15 +55,15 @@ public class User implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "username")
     private String username;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 255)
+    @Column(name = "email")
+    private String email;
+    @Size(max = 255)
     @Column(name = "password")
     private String password;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 15)
+    @Size(max = 15)
     @Column(name = "phone")
     private String phone;
     @Column(name = "isDeleted")
@@ -72,9 +73,13 @@ public class User implements Serializable {
     @Column(name = "avatar")
     private String avatar;
     @OneToMany(mappedBy = "userId")
+    private List<Usersocialaccount> usersocialaccountList;
+    @OneToMany(mappedBy = "userId")
     private List<Roombooking> roombookingList;
     @OneToMany(mappedBy = "staffId")
     private List<Roombooking> roombookingList1;
+    @OneToMany(mappedBy = "userId")
+    private List<Feedback> feedbackList;
     @OneToMany(mappedBy = "userPaidId")
     private List<Receipt> receiptList;
     @OneToMany(mappedBy = "staffId")
@@ -93,12 +98,10 @@ public class User implements Serializable {
         this.userId = userId;
     }
 
-    public User(Integer userId, String name, String username, String password, String phone) {
+    public User(Integer userId, String name, String username) {
         this.userId = userId;
         this.name = name;
         this.username = username;
-        this.password = password;
-        this.phone = phone;
     }
 
     public Integer getUserId() {
@@ -123,6 +126,14 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -157,6 +168,14 @@ public class User implements Serializable {
         this.avatar = avatar;
     }
 
+    public List<Usersocialaccount> getUsersocialaccountList() {
+        return usersocialaccountList;
+    }
+
+    public void setUsersocialaccountList(List<Usersocialaccount> usersocialaccountList) {
+        this.usersocialaccountList = usersocialaccountList;
+    }
+
     public List<Roombooking> getRoombookingList() {
         return roombookingList;
     }
@@ -171,6 +190,14 @@ public class User implements Serializable {
 
     public void setRoombookingList1(List<Roombooking> roombookingList1) {
         this.roombookingList1 = roombookingList1;
+    }
+
+    public List<Feedback> getFeedbackList() {
+        return feedbackList;
+    }
+
+    public void setFeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
     }
 
     public List<Receipt> getReceiptList() {

@@ -13,7 +13,8 @@ public class AppInitConfig extends AbstractAnnotationConfigDispatcherServletInit
         return new Class[]{
             ThymeleafConfig.class,
             HibernateConfig.class,
-            SidebarConfig.class
+            SidebarConfig.class,
+            SpringSecurityConfig.class
         };
     }
 

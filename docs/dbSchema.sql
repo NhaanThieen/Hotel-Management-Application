@@ -16,15 +16,26 @@ CREATE TABLE MemberTier (
 CREATE TABLE User (
     userId INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-	username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    phone VARCHAR(15) NOT NULL UNIQUE,
+	username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) UNIQUE,
+    password VARCHAR(255),
+    phone VARCHAR(15) UNIQUE,
     isDeleted TINYINT DEFAULT 0,
     roleId INT NOT NULL,
     avatar TEXT NULL,
     memberTierId INT NULL, -- Cho phép NULL nếu là nhân viên hoặc khách vãng lai
     FOREIGN KEY (roleId) REFERENCES Role(roleId),
     FOREIGN KEY (memberTierId) REFERENCES MemberTier(memberTierId)
+);
+
+-- Không mock dữ liệu bảng này, provider sử dụng enum trong java.
+CREATE TABLE UserSocialAccount (
+    UserSocialAccountId INT AUTO_INCREMENT PRIMARY KEY,
+    provider VARCHAR(255) NOT NULL,
+    providerId VARCHAR(255) NOT NULL,
+    userId INT NOT NULL,
+    FOREIGN KEY (userId) REFERENCES User(userId),
+    UNIQUE(provider, providerId)
 );
 
 -- Component ROOM
@@ -203,6 +214,17 @@ CREATE TABLE ManualDiscountDetail(
     receiptId INT NOT NULL, 
 	FOREIGN KEY (manualDiscountReasonId) REFERENCES ManualDiscountReason(manualDiscountReasonId),
 	FOREIGN KEY (receiptId) REFERENCES Receipt(receiptId)
+);
+
+CREATE TABLE Feedback (
+    feedbackId INT AUTO_INCREMENT PRIMARY KEY,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5), 
+    comment TEXT NULL,
+    createAt DATETIME NOT NULL,
+    userId INT NOT NULL,
+    roomBookingId INT NOT NULL,
+    FOREIGN KEY (userId) REFERENCES User(userId),
+    FOREIGN KEY (roomBookingId) REFERENCES RoomBooking(roomBookingId)
 );
 
 

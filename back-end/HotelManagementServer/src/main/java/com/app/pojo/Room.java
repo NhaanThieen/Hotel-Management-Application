@@ -45,47 +45,36 @@ public class Room implements Serializable {
     @Basic(optional = false)
     @Column(name = "roomId")
     private Integer roomId;
-    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "roomName")
     private String roomName;
-    
     @Column(name = "isDeleted")
     private Short isDeleted;
-    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "price")
     private BigDecimal price;
-    
     @Column(name = "capacity")
     private Integer capacity;
-    
     @Column(name = "version")
     private Integer version;
-    
     @Lob
     @Size(max = 65535)
     @Column(name = "thumbnail")
     private String thumbnail;
-    
     @OneToMany(mappedBy = "roomId")
     private List<Bed> bedList;
-    
     @OneToMany(mappedBy = "roomId")
     private List<Roomimage> roomimageList;
-    
     @JoinColumn(name = "roomStatusId", referencedColumnName = "roomStatusId")
     @ManyToOne(optional = false)
     private Roomstatus roomStatusId;
-    
     @JoinColumn(name = "roomTypeId", referencedColumnName = "roomTypeId")
     @ManyToOne(optional = false)
     private Roomtype roomTypeId;
-    
     @OneToMany(mappedBy = "roomId")
     private List<Roombookingdetail> roombookingdetailList;
 
