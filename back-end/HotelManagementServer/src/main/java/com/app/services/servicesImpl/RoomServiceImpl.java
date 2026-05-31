@@ -10,14 +10,19 @@ import com.app.dto.response.ListRoomAdminRoomPageDTO;
 import com.app.pojo.Bed;
 import com.app.pojo.Bedtype;
 import com.app.pojo.Room;
+import com.app.pojo.Roomimage;
 import com.app.pojo.Roomstatus;
 import com.app.pojo.Roomtype;
+import com.app.repositories.RoomImageRepository;
 import com.app.repositories.RoomRepository;
 import com.app.repositories.RoomStatusRepository;
 import com.app.repositories.RoomTypeRepository;
 import com.app.services.BedService;
 import com.app.services.BedTypeService;
 import com.app.services.RoomService;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +32,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 // Mặc định bật transaction read cho toàn bộ class, để tránh trường hợp gọi chéo hàm nội bộ không có trasaction
@@ -44,10 +50,16 @@ public class RoomServiceImpl implements RoomService {
     private RoomTypeRepository roomTypeRepository;
 
     @Autowired
+    private RoomImageRepository roomImageRepository;
+
+    @Autowired
     private BedTypeService bedTypeService;
 
     @Autowired
     private BedService bedService;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Override
     public ListRoomAdminRoomPageDTO getRooms(RoomSearchCriteria roomData) {
@@ -112,7 +124,7 @@ public class RoomServiceImpl implements RoomService {
         }
         // <0 là A < B
         if (roomDTO.getPrice().compareTo(rt.getPrice()) < 0) {
-            throw new IllegalArgumentException(String.format("Số tiền không được nhỏ hơn %s", rt.getPrice()));
+            throw new IllegalArgumentException(String.format(java.util.Locale.of("vi", "VN"), "Số tiền không được nhỏ hơn %,d VNĐ", rt.getPrice().longValue()));
         }
         room.setRoomName(roomDTO.getName());
         room.setCapacity(roomDTO.getCapacity());
@@ -122,8 +134,42 @@ public class RoomServiceImpl implements RoomService {
         room.setIsDeleted((short) 0);
         room.setVersion(0);
 
-        // Save room
+        // Lưu img
+        if (roomDTO.getThumbnailImage() != null && !roomDTO.getThumbnailImage().isEmpty()) {
+            try {
+                Map res = this.cloudinary.uploader().upload(roomDTO.getThumbnailImage().getBytes(),
+                        ObjectUtils.asMap("resource_type", "auto"));
+                room.setThumbnail(res.get("secure_url").toString());
+            } catch (IOException ex) {
+                throw new RuntimeException("Lỗi upload ảnh đại diện: " + ex.getMessage());
+            }
+        }
+
+        // Lưu room để lấy id để lưu những table khác
         this.roomRepository.saveRoom(room);
+
+        // Lưu ảnh phụ
+        if (roomDTO.getExtraImageFiles() != null && !roomDTO.getExtraImageFiles().isEmpty()) {
+            List<Roomimage> rimgList = new ArrayList<>();
+            for (MultipartFile extraFile : roomDTO.getExtraImageFiles()) {
+                if (extraFile != null && !extraFile.isEmpty()) {
+                    try {
+                        Map res = this.cloudinary.uploader().upload(extraFile.getBytes(),
+                                ObjectUtils.asMap("resource_type", "auto"));
+                        String extraImgUrl = res.get("secure_url").toString();
+
+                        Roomimage rimg = new Roomimage();
+                        rimg.setRoomId(room);
+                        rimg.setUrl(extraImgUrl);
+                        rimgList.add(rimg);
+
+                    } catch (IOException ex) {
+                        throw new RuntimeException("Lỗi upload ảnh phụ: " + ex.getMessage());
+                    }
+                }
+            }
+            this.roomImageRepository.saveAll(rimgList);
+        }
 
         // Lưu bed
         if (roomDTO.getBeds() != null && !roomDTO.getBeds().isEmpty()) {

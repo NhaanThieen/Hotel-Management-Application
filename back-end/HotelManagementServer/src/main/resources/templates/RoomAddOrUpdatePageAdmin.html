@@ -29,7 +29,15 @@
 
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
-                    <form th:action="@{/admin/addOrUpdateRoom/process}" method="POST" th:object="${roomForm}">
+
+                    <!-- Hiển thị lỗi exception -->
+                    <div th:if="${errorMsg}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fa-solid fa-circle-exclamation me-2"></i>
+                        <span th:text="${errorMsg}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <form th:action="@{/admin/addOrUpdateRoom/process}" method="POST" th:object="${roomForm}" enctype="multipart/form-data">
 
                         <input th:field="*{roomId}" type="hidden" name="id" value="" />
 
@@ -38,11 +46,13 @@
                                 <label class="form-label fw-semibold">Số / Tên Phòng <span class="text-danger">*</span></label>
                                 <input th:field="*{name}" type="text" class="form-control" placeholder="VD: Phòng 101" required>
                             </div>
+                            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger small mt-1"></div>
 
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Giá mỗi đêm (VNĐ) <span class="text-danger">*</span></label>
                                 <input th:field="*{price}" type="number" class="form-control" placeholder="VD: 500000" min="0" required>
                             </div>
+                            <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="text-danger small mt-1"></div>
 
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Loại Phòng</label>
@@ -54,6 +64,7 @@
                                             ></option>
                                 </select>
                             </div>
+                            <div th:if="${#fields.hasErrors('typeId')}" th:errors="*{typeId}" class="text-danger small mt-1"></div>
 
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Trạng Thái</label>
@@ -65,6 +76,7 @@
                                             ></option>
                                 </select>
                             </div>
+                            <div th:if="${#fields.hasErrors('statusId')}" th:errors="*{statusId}" class="text-danger small mt-1"></div>
 
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Sức chứa tối đa (Người) <span class="text-danger">*</span></label>
@@ -73,34 +85,31 @@
                                     <input th:field="*{capacity}" class="form-control" placeholder="VD: 2" min="1" required>
                                 </div>
                             </div>
+                            <div th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}" class="text-danger small mt-1"></div>
 
                             <div class="col-12">
-                                
-                                <label class="form-label fw-semibold">Cấu hình Giường <span class="text-danger">*</span></label>
+
+                                <label class="form-label fw-semibold">Cấu hình Giường</label>
                                 <div class="card border border-light-subtle shadow-sm">
                                     <div class="card-body bg-light rounded d-flex flex-wrap gap-3">
-
                                         <div th:each="bedTypeItem, iterStat : ${bedTypeResponse.bedTypes}" class="input-group" style="width: 250px;">
                                             <span th:text="${bedTypeItem.name}" class="input-group-text bg-white small"></span>
-
                                             <input th:name="|beds[${iterStat.index}].bedTypeId|" th:value="${bedTypeItem.bedTypeId}" type="hidden">
-
                                             <input th:name="|beds[${iterStat.index}].quantity|" type="number" class="form-control" placeholder="Số lượng..." min="0" value="0">
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Ảnh đại diện chính (Thumbnail) <span class="text-danger">*</span></label>
-                                <input name="thumbnailFile" type="file" class="form-control" accept="image/png, image/jpeg">
+                                <label class="form-label fw-semibold">Ảnh đại diện chính (Thumbnail)</label>
+                                <input th:field="*{thumbnailImage}" type="file" class="form-control" accept="image/png, image/jpeg">
                                 <div class="form-text mt-1">Ảnh hiển thị ngoài danh sách (1 ảnh).</div>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Các góc chụp khác (Ảnh phụ)</label>
-                                <input name="extraImageFiles" type="file" class="form-control" accept="image/png, image/jpeg" multiple>
+                                <input th:field="*{extraImageFiles}" type="file" class="form-control" accept="image/png, image/jpeg" multiple>
                                 <div class="form-text mt-1">Giữ Ctrl để chọn nhiều ảnh (Tùy chọn).</div>
                             </div>
                         </div>

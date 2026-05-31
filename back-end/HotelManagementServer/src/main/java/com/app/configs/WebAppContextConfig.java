@@ -1,10 +1,13 @@
 // Cấu hình những gì liên quan tới web
 package com.app.configs;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -51,7 +54,20 @@ public class WebAppContextConfig implements WebMvcConfigurer {
     }
 
 
+    @Bean
+    public Cloudinary cloudinary() {
+        Cloudinary cloudinary
+                = new Cloudinary(ObjectUtils.asMap(
+                        "cloud_name", "doa6ykcp1",
+                        "api_key", "932522258646968",
+                        "api_secret", "n4WGj7TbCtEqMDhwz1lf4irdNHk",
+                        "secure", true));
+        return cloudinary;
+    }
     
-    
-
+    // Do request gửi lên là form đã được mã hóa để gửi file. Nên cần đối tượng này để giải mã (nếu không mọi dữ liệu sẽ là null).
+    @Bean
+    public StandardServletMultipartResolver multipartResolver(){
+        return new StandardServletMultipartResolver();
+    }
 }

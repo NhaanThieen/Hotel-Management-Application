@@ -4,24 +4,25 @@
  */
 package com.app.services.servicesImpl;
 
-import com.app.pojo.Roomstatus;
-import com.app.repositories.RoomStatusRepository;
-import com.app.services.RoomStatusService;
+import com.app.pojo.Roomimage;
+import com.app.repositories.RoomImageRepository;
+import com.app.services.RoomImageService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @Transactional(readOnly = true)
-public class RoomStatusServiceImpl implements RoomStatusService{
-    
-    @Autowired
-    private RoomStatusRepository roomStatusRepository;
+public class RoomImageServiceImpl implements RoomImageService{
 
+    @Autowired
+    private RoomImageRepository roomImageRepository;
+    
     @Override
-    public List<Roomstatus> getRoomStatus() {
-        return this.roomStatusRepository.getRoomStatus();
+    @Transactional
+    public List<Roomimage> saveAll(List<Roomimage> roomImages) {
+        return this.roomImageRepository.saveAll(roomImages);
     }
+    
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @ControllerAdvice(basePackages = "com.app.controllers.admin")
@@ -73,6 +74,12 @@ public class AdminPageController {
         return "RoomsPageAdmin";
     }
 
+    private void loadBasicRoomData(Model model) {
+        model.addAttribute("roomTypeResponse", new RoomTypeResponse(this.roomTypeService.getRoomTypes()));
+        model.addAttribute("roomStatusResponse", new RoomStatusResponse(this.roomStatusService.getRoomStatus()));
+        model.addAttribute("bedTypeResponse", new BedTypeResponse(this.bedTypeService.getBedTypes()));
+    }
+
     @GetMapping("/addOrUpdateRoom")
     public String createAddOrUpdateRoomPage(Model model) {
 
@@ -94,24 +101,29 @@ public class AdminPageController {
     public String addOrUpdateRoom(Model model,
             // đặt đúng tên trong file HTML, để nếu có lỗi nó sẽ trả về object tên này cho html
             @Valid @ModelAttribute("roomForm") RoomCreateDTO roomCreateDTO,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            // Trả về giá trị khi redirect
+            RedirectAttributes redirectAttributes
     ) {
 
         // Validate input
         if (bindingResult.hasErrors()) {
+            // Lỗi này không cần dùng model để quăng ra View.
             System.out.println("Chi tiết lỗi: " + bindingResult.getAllErrors());
-            RoomTypeResponse roomTypeResponse = new RoomTypeResponse(this.roomTypeService.getRoomTypes());
-            RoomStatusResponse roomStatusResponse = new RoomStatusResponse(this.roomStatusService.getRoomStatus());
-            BedTypeResponse bedTypeResponse = new BedTypeResponse(this.bedTypeService.getBedTypes());
-
-            model.addAttribute("roomTypeResponse", roomTypeResponse);
-            model.addAttribute("roomStatusResponse", roomStatusResponse);
-            model.addAttribute("bedTypeResponse", bedTypeResponse);
-
+            loadBasicRoomData(model);
             return "RoomAddOrUpdatePageAdmin";
         }
 
-        this.roomService.createRooms(roomCreateDTO);
-        return "HomePageAdmin";
+        // Xử lý bắt các expection khi thrown ra
+        try {
+            this.roomService.createRooms(roomCreateDTO);
+            redirectAttributes.addFlashAttribute("successMsg", "Thêm phòng thành công: " + roomCreateDTO.getName());
+            return "redirect:/admin/rooms";
+        } catch (Exception e) {
+            // Cần dùng model để quăng lỗi này ra View thay vì crash server
+            model.addAttribute("errorMsg", e.getMessage());
+            loadBasicRoomData(model);
+            return "RoomAddOrUpdatePageAdmin";
+        }
     }
 }

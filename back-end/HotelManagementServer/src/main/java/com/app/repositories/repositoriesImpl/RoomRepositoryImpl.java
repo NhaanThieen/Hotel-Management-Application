@@ -70,12 +70,15 @@ public class RoomRepositoryImpl implements RoomRepository {
         if (roomData.getMaxPrice() != null) {
             predicates.add(cb.lessThanOrEqualTo(root.get("price"), roomData.getMaxPrice()));
         }
-
+             
         // Thêm predicate vào where
         cq.where(predicates.toArray(Predicate[]::new));
 
 
         cq.select(root);
+        
+        // Sắp xếp từ Z -> A
+        cq.orderBy(cb.desc(root.get("roomId")));
 
         Query query = session.createQuery(cq);
 

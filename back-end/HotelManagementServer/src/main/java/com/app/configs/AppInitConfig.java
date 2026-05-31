@@ -1,8 +1,10 @@
 package com.app.configs;
 
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-// Extends class này để báo cho Server biết đây mới là file cấu hình hệ thống tạo Beans cho IoC Container, thay thế cho file .xml cũ
+// Extends class này để báo cho Server (Tomcat) biết đây mới là file cấu hình hệ thống tạo Beans cho IoC Container, thay thế cho file .xml cũ
 public class AppInitConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     // Sẽ gọi chạy các file cấu hình khác được khai báo bên trong.
@@ -29,5 +31,16 @@ public class AppInitConfig extends AbstractAnnotationConfigDispatcherServletInit
         return new String[]{
             "/"
         };
+    }
+
+    // Cấu hình để server cho phép resolver giải mã dữ liệu đã bị encrypt (mã hóa).
+    @Override
+    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+        String location ="/";
+        long maxFileSize = 5242880;
+        long maxRequestSize = 20971520;
+        int fileSizeThreshold = 0;
+        
+        registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
     }
 }
