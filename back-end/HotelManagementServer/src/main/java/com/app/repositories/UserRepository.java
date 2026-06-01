@@ -4,12 +4,15 @@
  */
 package com.app.repositories;
 
+import com.app.dto.request.UserSearchCriteria;
 import com.app.pojo.User;
+import java.util.List;
 
 
 public interface UserRepository {
     public User getUserByUsername(String username);
     public User getUserByEmail(String email);
     public User getUserByPhone(String phone);
+    public List<User> getUsers(UserSearchCriteria criteria);
     public User createUser(User user);
 }

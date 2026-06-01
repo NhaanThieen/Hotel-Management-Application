@@ -4,10 +4,10 @@
  */
 package com.app.dto.request;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.web.multipart.MultipartFile;
 
 public class UserCreateDTO {
@@ -21,6 +21,7 @@ public class UserCreateDTO {
     private String password;
 
     @NotBlank(message = "Số điện thoại không được trống")
+    @Pattern(regexp = "^\\d+$", message = "Số điện thoại chỉ được chứa các chữ số")
     private String phone;
 
     @NotNull(message = "Role không được trống")

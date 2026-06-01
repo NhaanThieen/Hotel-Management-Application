@@ -1,6 +1,8 @@
 package com.app.services.servicesImpl;
 
 import com.app.dto.request.UserCreateDTO;
+import com.app.dto.request.UserSearchCriteria;
+import com.app.dto.response.ListUserAdminUserPageDTO;
 import com.app.pojo.Role;
 import com.app.pojo.User;
 import com.app.repositories.UserRepository;
@@ -9,6 +11,8 @@ import com.app.services.UserService;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -81,5 +85,31 @@ public class UserServiceImpl implements UserService {
             }
         }
         return this.userRepository.createUser(u);
+    }
+
+    @Override
+    public ListUserAdminUserPageDTO getUsers(UserSearchCriteria criteria) {
+        int currentPage = criteria.getPage();
+        if (currentPage < 1) {
+            currentPage = 1;
+        }
+        
+        List<User> userEntitys = this.userRepository.getUsers(criteria);
+        
+        List<ListUserAdminUserPageDTO.UserForAdminUserPageDTO> userDTOs = new ArrayList<>();
+        for(User u: userEntitys){
+            ListUserAdminUserPageDTO.UserForAdminUserPageDTO userDTO = new ListUserAdminUserPageDTO.UserForAdminUserPageDTO();
+            userDTO.setId(u.getUserId());
+            userDTO.setName(u.getName());
+            userDTO.setUsername(u.getUsername());
+            userDTO.setRoleId(u.getRoleId().getRoleId());
+            userDTO.setIsDeleted(u.getIsDeleted().intValue());
+            userDTO.setPhone(u.getPhone());
+            userDTO.setRoleName(u.getRoleId().getName());
+            userDTOs.add(userDTO);
+        }
+        ListUserAdminUserPageDTO response = new ListUserAdminUserPageDTO(userDTOs);
+        response.setCurrentPage(currentPage);
+        return response;
     }
 }

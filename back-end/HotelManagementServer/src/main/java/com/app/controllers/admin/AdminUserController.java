@@ -5,7 +5,8 @@
 package com.app.controllers.admin;
 
 import com.app.dto.request.UserCreateDTO;
-import com.app.repositories.UserRepository;
+import com.app.dto.request.UserSearchCriteria;
+import com.app.dto.response.ListUserAdminUserPageDTO;
 import com.app.services.UserRoleService;
 import com.app.services.UserService;
 import jakarta.validation.Valid;
@@ -25,24 +26,30 @@ public class AdminUserController {
 
     @Autowired
     private UserRoleService userRoleService;
-    
+
     @Autowired
     private UserService userService;
+    
 
     private void loadBasicUserData(Model model) {
         model.addAttribute("userRoles", this.userRoleService.getUserRoles());
     }
 
     @GetMapping("/")
-    public String createUserView(Model model) {
+    public String createUserView(Model model,
+            @ModelAttribute("searchCriteria") UserSearchCriteria criteria) {
+        
+        ListUserAdminUserPageDTO userResponse = this.userService.getUsers(criteria);
         loadBasicUserData(model);
+        model.addAttribute("userResponse", userResponse);
+        model.addAttribute("searchCriteria", criteria);
         return "UserPageAdmin";
     }
 
     @GetMapping("/addOrUpdateUser")
     public String createUserAddOrUpdateView(Model model) {
         loadBasicUserData(model);
-        model.addAttribute("userForm",new UserCreateDTO());
+        model.addAttribute("userForm", new UserCreateDTO());
         return "UserAddOrUpdatePageAdmin";
     }
 
