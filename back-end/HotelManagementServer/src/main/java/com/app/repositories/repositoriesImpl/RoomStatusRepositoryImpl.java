@@ -29,7 +29,7 @@ public class RoomStatusRepositoryImpl implements RoomStatusRepository {
     @Override
     public Roomstatus getRoomStatusById(Integer id) {
         Session session = sessionFactory.getCurrentSession();
-        Query<Roomstatus> query = session.createQuery("FROM Roomstatus where roomStatusId=:id", Roomstatus.class);
+        Query<Roomstatus> query = session.createQuery("FROM Roomstatus WHERE roomStatusId=:id", Roomstatus.class);
         query.setParameter("id", id);
         return query.getSingleResultOrNull();
     }

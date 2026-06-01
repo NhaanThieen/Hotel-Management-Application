@@ -12,9 +12,9 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-
 @Repository
-public class UserRepositoryImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository {
+
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -23,7 +23,29 @@ public class UserRepositoryImpl implements UserRepository{
         Session session = this.sessionFactory.getCurrentSession();
         Query<User> query = session.createQuery("FROM User WHERE username=:username", User.class);
         query.setParameter("username", username);
-        
+        return query.getSingleResultOrNull();
+    }
+
+    @Override
+    public User createUser(User user) {
+        Session session = this.sessionFactory.getCurrentSession();
+        session.persist(user);
+        return user;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Query<User> query = session.createQuery("FROM User WHERE email=:email", User.class);
+        query.setParameter("email", email);
+        return query.getSingleResultOrNull();
+    }
+
+    @Override
+    public User getUserByPhone(String phone) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Query<User> query = session.createQuery("FROM User WHERE phone=:phone", User.class);
+        query.setParameter("phone", phone);
         return query.getSingleResultOrNull();
     }
 }

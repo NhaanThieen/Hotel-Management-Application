@@ -9,4 +9,7 @@ import com.app.pojo.User;
 
 public interface UserRepository {
     public User getUserByUsername(String username);
+    public User getUserByEmail(String email);
+    public User getUserByPhone(String phone);
+    public User createUser(User user);
 }

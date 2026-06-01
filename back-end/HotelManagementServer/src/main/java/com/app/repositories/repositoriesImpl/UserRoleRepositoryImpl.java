@@ -24,4 +24,12 @@ public class UserRoleRepositoryImpl implements UserRoleRepository{
         Query<Role> query = session.createQuery("FROM Role", Role.class);
         return query.getResultList();
     }
+
+    @Override
+    public Role getUserRoleById(Integer id) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Role> query = session.createQuery("FROM Role WHERE roleId=:id", Role.class);
+        query.setParameter("id", id);
+        return query.getSingleResultOrNull();
+    }
 }

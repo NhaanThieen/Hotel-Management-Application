@@ -28,6 +28,13 @@
     <div id="custom-page-content" th:remove="tag">
         <div class="container-fluid py-2">
 
+            <!-- Hiển thị redirect data -->
+            <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-circle-check me-2"></i>
+                <span th:text="${successMsg}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold m-0">
                     <i class="fa-solid fa-users-gear me-2 text-primary"></i>Quản lý tài khoản
@@ -89,7 +96,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="account : ${accounts}">
+                                <tr>
                                     <td th:text="${account.fullName}">Lê Tam Thiện</td>
                                     <td class="text-secondary" th:text="${account.username}">tamthien_ou</td>
                                     <td>

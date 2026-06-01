@@ -109,6 +109,10 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     public void createRooms(RoomCreateDTO roomDTO) {
 
+        if (roomDTO == null) {
+            throw new IllegalArgumentException("Dữ liệu gửi lên không được NULL");
+        }
+        
         // Lấy roomStatus và roomType
         Roomstatus rs = this.roomStatusRepository.getRoomStatusById(roomDTO.getStatusId());
         Roomtype rt = this.roomTypeRepository.getRoomTypeById(roomDTO.getTypeId());

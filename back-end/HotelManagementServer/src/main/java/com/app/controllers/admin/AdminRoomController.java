@@ -64,18 +64,9 @@ public class AdminRoomController {
 
     @GetMapping("/addOrUpdateRoom")
     public String createAddOrUpdateRoomPage(Model model) {
-
-        RoomTypeResponse roomTypeResponse = new RoomTypeResponse(this.roomTypeService.getRoomTypes());
-        RoomStatusResponse roomStatusResponse = new RoomStatusResponse(this.roomStatusService.getRoomStatus());
-        BedTypeResponse bedTypeResponse = new BedTypeResponse(this.bedTypeService.getBedTypes());
-
         // Form Binding sử dụng dto
         model.addAttribute("roomForm", new RoomCreateDTO());
-
-        model.addAttribute("roomTypeResponse", roomTypeResponse);
-        model.addAttribute("roomStatusResponse", roomStatusResponse);
-        model.addAttribute("bedTypeResponse", bedTypeResponse);
-
+        loadBasicRoomData(model);
         return "RoomAddOrUpdatePageAdmin";
     }
 
