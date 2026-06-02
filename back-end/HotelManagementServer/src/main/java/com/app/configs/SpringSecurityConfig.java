@@ -1,35 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.app.configs;
 
-import com.cloudinary.Api.HttpMethod;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
+// Hiện thực sẵn các bean cho spring security. Cần sửa dụng cái nào thì override lại bean đó
 @EnableWebSecurity
-@EnableTransactionManagement
-@ComponentScan(
-        basePackages = {
-            "com.app.controllers",
-            "com.app.repositories",
-            "com.app.services",
-            "com.app.dto"
-        }
-)
 public class SpringSecurityConfig {
 
     @Autowired
@@ -53,24 +37,19 @@ public class SpringSecurityConfig {
                 .requestMatchers("/api/**").permitAll()
                 // Cấp quyền truy cập công khai cho các thư mục tài nguyên tĩnh
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
+                // Bất kỳ URL nào không nằm trong danh sách thì phải login
                 .anyRequest().authenticated()
         ).formLogin(form -> form.loginPage("/admin/login/") // Đường dẫn tới trang đăng nhập
                 .loginProcessingUrl("/login") // Đường dẫn xử lý POST
-                .defaultSuccessUrl("/admin/", true) // Chuyển hướng khi thành công
+                .defaultSuccessUrl("/admin/", true) // Chuyển hướng khi đăng nhập thành công
                 .failureUrl("/admin/login/?error=true") // Chuyển hướng khi thất bại
                 .permitAll()
-        ).logout((logout) -> logout.logoutSuccessUrl("/admin/login/").permitAll());
+        ).logout((logout) -> logout.logoutSuccessUrl("/admin/login/").permitAll())
+                .sessionManagement(session -> session
+                .invalidSessionUrl("/admin/login/?timeout=true") // Khi session hết hạn thì trở về trang login
+                .maximumSessions(1) // Mỗi tài khoản chỉ được đăng nhập trên 1 thiết bị/browser cùng lúc.
+                .expiredUrl("/admin/login/?expired=true") // Nếu người thứ 2 đăng nhập, người thứ nhất sẽ bị văng ra về điều hướng về login
+                ); 
         return http.build();
-    }
-
-    @Bean
-    public Cloudinary cloudinary() {
-        Cloudinary cloudinary
-                = new Cloudinary(ObjectUtils.asMap(
-                        "cloud_name", "doa6ykcp1",
-                        "api_key", "932522258646968",
-                        "api_secret", "n4WGj7TbCtEqMDhwz1lf4irdNHk",
-                        "secure", true));
-        return cloudinary;
     }
 }

@@ -1,33 +1,24 @@
 // Cấu hình những gì liên quan tới web
 package com.app.configs;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// Khai báo đây là file cấu hình các Bean bằng code java, thay vì file .xml cũ
+// Khai báo đây là file cấu hình các Bean bằng code java, thay vì file .xml cũ. Spring sẽ đọc file này
 @Configuration
 // Đi vào từng file trong package để khởi tạo các Bean (Có annotation), sau đó bỏ vào Container
 @ComponentScan(
         basePackages = {
             "com.app.controllers",
-            "com.app.repositories",
-            "com.app.services",
-            "com.app.dto"
         }
 )
-
-// Cho phép sử dụng TransactionManager của Spring
-@EnableTransactionManagement
-
 // Hiện thực cấu hình mặc định của interface WebMvcConfigurer. Cần sửa cái nào thì ghi đè
 @EnableWebMvc
 // implements WebMvcConfigurer để ghi đè lại cấu hình webmvc của spring
@@ -40,7 +31,6 @@ public class WebAppContextConfig implements WebMvcConfigurer {
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
-
     
     // Spring MVC thuần thì File tĩnh được cấu hình không nằm ở trong folder resources. Nên cần phải cấu hình
     // lại cho trỏ về resources.
@@ -52,7 +42,6 @@ public class WebAppContextConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/js/**")
                 .addResourceLocations("classpath:/static/js/");
     }
-
     
     // Do request gửi lên là form đã được mã hóa để gửi file. Nên cần đối tượng này để giải mã (nếu không mọi dữ liệu sẽ là null).
     @Bean

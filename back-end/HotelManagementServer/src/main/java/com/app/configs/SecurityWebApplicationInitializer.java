@@ -7,7 +7,7 @@ package com.app.configs;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
 
-//Class để khởi động SpringSecurity
+//Class để khởi động SpringSecurity. Tomcat sẽ đọc file này để khởi tạo class đứng trước hứng request 
 public class SecurityWebApplicationInitializer extends AbstractSecurityWebApplicationInitializer{
     
 }

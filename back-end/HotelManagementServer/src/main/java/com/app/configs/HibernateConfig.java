@@ -26,14 +26,13 @@ public class HibernateConfig {
     // -> Tạo ra Datasource rất tốn chi phí, do nó phải tạo kèm thêm các connection tới db. Nên ta cần cho nó 
     // là Bean để Singleton
     public DataSource datasource() {
-        
         // Sử dụng connection pool hikari
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(env.getProperty("hibernate.connection.driverClass"));
         config.setJdbcUrl(env.getProperty("hibernate.connection.url"));
         config.setUsername(env.getProperty("hibernate.connection.username"));
         config.setPassword(env.getProperty("hibernate.connection.password"));
-        
+       
         // Mở sẵn 20 connection
         config.setMaximumPoolSize(env.getProperty("hikari.maximum.poolsize", Integer.class));
         // Ít người dùng thì luôn mở 2 connection
@@ -50,20 +49,16 @@ public class HibernateConfig {
         props.put(SHOW_SQL, env.getProperty("hibernate.showSql"));
         props.put("hibernate.default_batch_fetch_size", env.getProperty("hibernate.default_batch_fetch_size"));
         return props;
-
     }
 
     // Tạo ra SessionFactory -> Bean, chỉ cần 1 SessionFactory singleton là đủ.
     @Bean
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-
         sessionFactory.setPackagesToScan(new String[]{"com.app.pojo"});
-
         // Set Session Factory sử dụng Connection Pool Manager này
         // Khi nào tạo Session thì cứ vào Datasource để lấy connection dùng, sau đó trả lại
         sessionFactory.setDataSource(datasource());
-
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }
