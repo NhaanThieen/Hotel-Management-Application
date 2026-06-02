@@ -1,7 +1,9 @@
 package com.app.services.servicesImpl;
 
+import com.app.dto.request.ApiRegisterDTO;
 import com.app.dto.request.UserCreateDTO;
 import com.app.dto.request.UserSearchCriteria;
+import com.app.dto.response.ApiResponse;
 import com.app.dto.response.ListUserAdminUserPageDTO;
 import com.app.pojo.Role;
 import com.app.pojo.User;
@@ -93,11 +95,11 @@ public class UserServiceImpl implements UserService {
         if (currentPage < 1) {
             currentPage = 1;
         }
-        
+
         List<User> userEntitys = this.userRepository.getUsers(criteria);
-        
+
         List<ListUserAdminUserPageDTO.UserForAdminUserPageDTO> userDTOs = new ArrayList<>();
-        for(User u: userEntitys){
+        for (User u : userEntitys) {
             ListUserAdminUserPageDTO.UserForAdminUserPageDTO userDTO = new ListUserAdminUserPageDTO.UserForAdminUserPageDTO();
             userDTO.setId(u.getUserId());
             userDTO.setName(u.getName());
@@ -111,5 +113,34 @@ public class UserServiceImpl implements UserService {
         ListUserAdminUserPageDTO response = new ListUserAdminUserPageDTO(userDTOs);
         response.setCurrentPage(currentPage);
         return response;
+    }
+
+    @Override
+    @Transactional
+    public User createUserForClient(ApiRegisterDTO registerDTO) {
+
+        if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
+            throw new IllegalArgumentException("Mật khẩu xác nhận không khớp");
+
+        }
+        //Mapping
+        UserCreateDTO userData = new UserCreateDTO();
+        userData.setName(registerDTO.getName());
+        userData.setUserName(registerDTO.getUsername());
+        userData.setPhone(registerDTO.getPhone());
+        userData.setPassword(registerDTO.getPassword());
+
+        Role r = this.userRoleRepository.getRoleByName("CUSTOMER");
+        if (r == null) {
+            throw new RuntimeException("Lỗi hệ thống: Không tìm thấy quyền CUSTOMER trong Database");
+        }
+        
+        userData.setRoleId(r.getRoleId());
+        User u = this.createUser(userData);
+
+        if (u == null) {
+            throw new RuntimeException("Không thể lưu tài khoản vào Database do lỗi hệ thống");
+        }
+        return u;
     }
 }

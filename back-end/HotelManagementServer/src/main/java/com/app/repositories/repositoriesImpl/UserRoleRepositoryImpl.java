@@ -14,12 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserRoleRepositoryImpl implements UserRoleRepository{
+public class UserRoleRepositoryImpl implements UserRoleRepository {
+
     @Autowired
     SessionFactory sessionFactory;
-    
+
     @Override
-    public List<Role> getUserRoles(){
+    public List<Role> getUserRoles() {
         Session session = sessionFactory.getCurrentSession();
         Query<Role> query = session.createQuery("FROM Role", Role.class);
         return query.getResultList();
@@ -30,6 +31,14 @@ public class UserRoleRepositoryImpl implements UserRoleRepository{
         Session session = sessionFactory.getCurrentSession();
         Query<Role> query = session.createQuery("FROM Role WHERE roleId=:id", Role.class);
         query.setParameter("id", id);
+        return query.getSingleResultOrNull();
+    }
+
+    @Override
+    public Role getRoleByName(String roleName) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Role> query = session.createQuery("FROM Role WHERE name=:name", Role.class);
+        query.setParameter("name", roleName);
         return query.getSingleResultOrNull();
     }
 }

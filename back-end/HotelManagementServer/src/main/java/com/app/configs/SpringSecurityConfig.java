@@ -60,7 +60,7 @@ public class SpringSecurityConfig {
                 
                 // Phân quyền truy vập
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/login").permitAll()
+                .requestMatchers("/api/login", "/api/register").permitAll()
                 // Mọi api bắt đầu bằng /api/** đã xác thực mới được vào
                 .requestMatchers("/api/secure/**").authenticated()
                 .anyRequest().permitAll()
