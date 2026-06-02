@@ -1,14 +1,17 @@
-
 package com.app.configs;
 
+import com.app.filters.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
@@ -19,7 +22,9 @@ public class SpringSecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // Đối tượng hash password
+    @Autowired
+    private JwtFilter jwtFilter;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -30,26 +35,51 @@ public class SpringSecurityConfig {
         return new HandlerMappingIntrospector();
     }
 
+    // Này để xác thực cho đăng nhập bằng API, Token    
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(c -> c.disable()).authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/admin/**").hasAnyRole("ADMIN")
-                .requestMatchers("/api/**").permitAll()
-                // Cấp quyền truy cập công khai cho các thư mục tài nguyên tĩnh
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
-                // Bất kỳ URL nào không nằm trong danh sách thì phải login
-                .anyRequest().authenticated()
-        ).formLogin(form -> form.loginPage("/admin/login/") // Đường dẫn tới trang đăng nhập
-                .loginProcessingUrl("/login") // Đường dẫn xử lý POST
-                .defaultSuccessUrl("/admin/", true) // Chuyển hướng khi đăng nhập thành công
-                .failureUrl("/admin/login/?error=true") // Chuyển hướng khi thất bại
-                .permitAll()
-        ).logout((logout) -> logout.logoutSuccessUrl("/admin/login/").permitAll())
+    @Order(1)
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/api/**") 
+                .csrf(c -> c.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/login").permitAll()
+                    .requestMatchers("/api/secure/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/api/secure/**").authenticated()
+                    .anyRequest().permitAll()
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+    
+    // Này để xác thực cho đăng nhập bằng thymeleaf    
+    @Bean
+    @Order(2)
+    public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(c -> c.disable())
+                .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
+                    .requestMatchers("/", "/admin/**").hasAnyRole("ADMIN")
+                    .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                    .loginPage("/admin/login/")
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/admin/", true)
+                    .failureUrl("/admin/login/?error=true")
+                    .permitAll()
+                )
+                .logout(logout -> logout
+                    .logoutSuccessUrl("/admin/login/")
+                    .permitAll()
+                )
                 .sessionManagement(session -> session
-                .invalidSessionUrl("/admin/login/?timeout=true") // Khi session hết hạn thì trở về trang login
-                .maximumSessions(1) // Mỗi tài khoản chỉ được đăng nhập trên 1 thiết bị/browser cùng lúc.
-                .expiredUrl("/admin/login/?expired=true") // Nếu người thứ 2 đăng nhập, người thứ nhất sẽ bị văng ra về điều hướng về login
-                ); 
+                    .invalidSessionUrl("/admin/login/?timeout=true")
+                    .maximumSessions(1)
+                    .expiredUrl("/admin/login/?expired=true")
+                );
+
         return http.build();
     }
 }

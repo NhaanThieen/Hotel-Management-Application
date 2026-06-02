@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         basePackages = {
             "com.app.repositories",
             "com.app.services",
-            "com.app.dto"
+            "com.app.dto",
+            "com.app.filters",
+            "com.app.utils"
         }
 )
 public class RootAppContextConfig {
