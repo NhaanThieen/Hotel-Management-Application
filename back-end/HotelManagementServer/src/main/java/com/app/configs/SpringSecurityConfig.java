@@ -33,7 +33,7 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(c -> c.disable()).authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/admin/**").permitAll()
+                .requestMatchers("/", "/admin/**").hasAnyRole("ADMIN")
                 .requestMatchers("/api/**").permitAll()
                 // Cấp quyền truy cập công khai cho các thư mục tài nguyên tĩnh
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()

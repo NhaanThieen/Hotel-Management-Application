@@ -76,7 +76,7 @@ public class AdminUserController {
             // Cần dùng model để quăng lỗi này ra View thay vì crash server
             model.addAttribute("errorMsg", e.getMessage());
             loadBasicUserData(model);
-            return "UserPageAdmin";
+            return "UserAddOrUpdatePageAdmin";
         }
     }
 }
