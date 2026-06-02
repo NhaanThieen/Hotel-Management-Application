@@ -25,6 +25,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
 
+    // Hàm filter sẽ tự động gọi hàm phân giải token, sau đó tạo đối tượng authentication để bỏ vào SecurityContextHolder.
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         

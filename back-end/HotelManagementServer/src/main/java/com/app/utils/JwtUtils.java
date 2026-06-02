@@ -26,6 +26,7 @@ public class JwtUtils {
     @Value("${token.expire.time}")
     private long expirationMs; 
 
+    // Dùng để tạo token
     public String generateToken(String username, String roles) throws Exception {
         JWSSigner signer = new MACSigner(secretKey);
 
@@ -46,6 +47,7 @@ public class JwtUtils {
         return signedJWT.serialize();
     }
 
+    // Phân giải token thành thông tin để filter tạo đối tượng authentication
     public JWTClaimsSet validateTokenAndGetClaims(String token) throws Exception {
         SignedJWT signedJWT = SignedJWT.parse(token);
         JWSVerifier verifier = new MACVerifier(secretKey);
