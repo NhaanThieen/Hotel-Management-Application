@@ -35,7 +35,8 @@ INSERT INTO User (name, username, email, password, phone, isDeleted, roleId, ava
 INSERT INTO RoomStatus (name) VALUES 
 ('Available'),
 ('Occupied'),
-('Maintenance');
+('Maintenance'),
+('Booking');
 
 -- Đã sửa: Có price và thêm description theo schema
 INSERT INTO RoomType (name, price, description) VALUES 

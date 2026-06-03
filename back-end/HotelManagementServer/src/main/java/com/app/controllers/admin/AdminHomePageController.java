@@ -1,6 +1,8 @@
 package com.app.controllers.admin;
 
+import com.app.dto.response.ListRoomReceptDashboarDTO;
 import com.app.properties.SidebarGroupProperties;
+import com.app.services.RoomService;
 import com.app.services.servicesImpl.SidebarService;
 
 import java.util.List;
@@ -22,6 +24,8 @@ public class AdminHomePageController {
 
     @Autowired
     private SidebarService sidebarService;
+    
+    
 
     @ModelAttribute
     public void commonResponse(Model model) {
@@ -33,10 +37,7 @@ public class AdminHomePageController {
                 break;
             }
         }
-        // THÊM DÒNG LOG NÀY ĐỂ KIỂM TRA
-        System.out.println("DEBUG ROLE ĐANG NHẬN ĐƯỢC: " + role);
         List<SidebarGroupProperties> functions = this.sidebarService.getSidebarByRole(role);
-        // THÊM DÒNG LOG NÀY ĐỂ XEM CÓ DATA KHÔNG
         System.out.println("DEBUG SỐ LƯỢNG GROUP MENU: " + (functions != null ? functions.size() : "NULL"));
         model.addAttribute("sidebarMenu", functions);
     }
@@ -45,5 +46,7 @@ public class AdminHomePageController {
     public String createHomepageAdmin(Model model) {
         return "HomePageAdmin";
     }
+    
+    
 
 }
