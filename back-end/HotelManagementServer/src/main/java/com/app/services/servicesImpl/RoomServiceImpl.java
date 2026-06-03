@@ -4,8 +4,11 @@
  */
 package com.app.services.servicesImpl;
 
+import com.app.dto.request.ApiRoomSearchCriteria;
 import com.app.dto.request.RoomCreateDTO;
 import com.app.dto.request.RoomSearchCriteria;
+import com.app.dto.response.ApiResponse;
+import com.app.dto.response.ApiRoomPageDTO;
 import com.app.dto.response.ListRoomAdminRoomPageDTO;
 import com.app.pojo.Bed;
 import com.app.pojo.Bedtype;
@@ -112,7 +115,7 @@ public class RoomServiceImpl implements RoomService {
         if (roomDTO == null) {
             throw new IllegalArgumentException("Dữ liệu gửi lên không được NULL");
         }
-        
+
         // Lấy roomStatus và roomType
         Roomstatus rs = this.roomStatusRepository.getRoomStatusById(roomDTO.getStatusId());
         Roomtype rt = this.roomTypeRepository.getRoomTypeById(roomDTO.getTypeId());
@@ -207,5 +210,49 @@ public class RoomServiceImpl implements RoomService {
                 this.bedService.saveAll(entityBeds);
             }
         }
+    }
+
+    @Override
+    public ApiRoomPageDTO getRoomsForClient(ApiRoomSearchCriteria roomData) {
+
+        List<Room> rooms = this.roomRepository.getRoomsForClient(roomData);
+
+        // Mapping sang response
+        List<ApiRoomPageDTO.RoomForClientDTO> roomDTOs = new ArrayList<>();
+
+        for (Room r : rooms) {
+            ApiRoomPageDTO.RoomForClientDTO roomDTO = new ApiRoomPageDTO.RoomForClientDTO();
+
+            roomDTO.setRoomId(r.getRoomId());
+            roomDTO.setName(r.getRoomName());
+            roomDTO.setCapacity(r.getCapacity());
+            roomDTO.setPrice(r.getPrice());
+
+            if (r.getRoomTypeId() != null) {
+                roomDTO.setRoomTypeId(r.getRoomTypeId().getRoomTypeId());
+                roomDTO.setRoomTypeName(r.getRoomTypeId().getName());
+            }
+            roomDTO.setThumbnail(r.getThumbnail());
+
+            List<ApiRoomPageDTO.BedDTO> bedDTOs = new ArrayList<>();
+            if (r.getBedList() != null) {
+                for (Bed bed : r.getBedList()) {
+                    ApiRoomPageDTO.BedDTO bedDTO = new ApiRoomPageDTO.BedDTO();
+                    bedDTO.setQuantity(bed.getAmount());
+                    if (bed.getBedTypeId() != null) {
+                        bedDTO.setName(bed.getBedTypeId().getName());
+                    }
+                    bedDTOs.add(bedDTO);
+                }
+            }
+            roomDTO.setBeds(bedDTOs);
+            roomDTOs.add(roomDTO);
+        }
+        
+        ApiRoomPageDTO responsePage = new ApiRoomPageDTO();
+        responsePage.setRooms(roomDTOs);
+        int currentPage = (roomData.getPage() != null && roomData.getPage() > 0) ? roomData.getPage() : 1;
+        responsePage.setCurrentPage(currentPage);
+        return responsePage;
     }
 }
