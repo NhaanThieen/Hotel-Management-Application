@@ -1,8 +1,6 @@
 package com.app.controllers.admin;
 
-import com.app.dto.response.ListRoomReceptDashboarDTO;
 import com.app.properties.SidebarGroupProperties;
-import com.app.services.RoomService;
 import com.app.services.servicesImpl.SidebarService;
 
 import java.util.List;
@@ -24,8 +22,6 @@ public class AdminHomePageController {
 
     @Autowired
     private SidebarService sidebarService;
-    
-    
 
     @ModelAttribute
     public void commonResponse(Model model) {
@@ -46,7 +42,5 @@ public class AdminHomePageController {
     public String createHomepageAdmin(Model model) {
         return "HomePageAdmin";
     }
-    
-    
 
 }
