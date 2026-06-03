@@ -17,16 +17,19 @@ const Auth = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch("/api/auth/login", {
+            const res = await fetch("http://localhost:8080/HotelManagementServer/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(loginData)
+                body: JSON.stringify({
+                    username: loginData.userName, 
+                    password: loginData.password
+                })
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.message);
 
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem("token", data.data?.token || data.token); // Hứng an toàn từ ApiResponse
+            localStorage.setItem("user", JSON.stringify(data.data?.user || loginData.userName));
             
             toast.success("Đăng nhập thành công!");
             navigate("/"); 
@@ -40,8 +43,7 @@ const Auth = () => {
     const handleGoogleSuccess = async (credentialResponse) => {
         setLoading(true);
         try {
-            // Gửi chuỗi JWT của Google xuống Spring Boot để xác minh
-            const res = await fetch("/api/auth/google", {
+           const res = await fetch("http://localhost:8080/HotelManagementServer/api/auth/google", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token: credentialResponse.credential })
@@ -75,18 +77,20 @@ const Auth = () => {
         }
         setLoading(true);
         try {
-            const res = await fetch("/api/auth/register", {
+            const res = await fetch("http://localhost:8080/HotelManagementServer/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userName: registerData.userName,
-                    password: registerData.password,
                     name: registerData.name,
+                    username: registerData.userName,
+                    password: registerData.password,
+                    confirmPassword: registerData.confirmPassword,
                     phone: registerData.phone
                 })
             });
+            
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            if (!res.ok) throw new Error(data.message || "Dữ liệu đăng ký không hợp lệ");
 
             toast.success("Đăng ký thành công! Vui lòng đăng nhập lại.");
             setActiveTab("login"); 

@@ -50,8 +50,9 @@ const RoomSearchBar = ({ onSearch, initialValues = {}, hoverClass = "line-text-h
 
             <NavDropdown title={selectedRoomType} id="room-search-dropdown" className="me-2 text-white-50" menuVariant="dark">
                 <NavDropdown.Item onClick={() => setSelectedRoomType("Tất cả phòng")}>Tất cả phòng</NavDropdown.Item>
-                <NavDropdown.Item onClick={() => setSelectedRoomType("Phòng VIP")}>Phòng VIP</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => setSelectedRoomType("Phòng thường")}>Phòng thường</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => setSelectedRoomType("Phòng VIP")}>Phòng VIP</NavDropdown.Item>
+                
             </NavDropdown>
 
             <NavDropdown

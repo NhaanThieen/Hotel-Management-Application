@@ -17,10 +17,11 @@ const Services = () => {
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const res = await fetch("/api/services");
+                const res = await fetch("/HotelManagementServer/api/services");
                 if (!res.ok) throw new Error("Không thể tải danh sách dịch vụ.");
+                
                 const data = await res.json();
-                const activeServices = data.filter(item => item.isDeleted === 0);
+                const activeServices = data.data.filter(item => item.isDeleted === 0); 
                 setServices(activeServices);
             } catch (error) {
                 console.error("Lỗi kết nối dịch vụ:", error);
@@ -48,35 +49,51 @@ const Services = () => {
         }
     };
 
+    const getUsername = () => {
+        let userStr = localStorage.getItem("user");
+        if (!userStr) return null;
+        try {
+            const userObj = JSON.parse(userStr);
+            return userObj.username || userObj.userName || userObj;
+        } catch (e) {
+            return userStr.replace(/^["']|["']$/g, '');
+        }
+    };
+
     const confirmBookingService = async () => {
         setIsBooking(true);
         try {
-            // Lấy thông tin tài khoản đang thực hiện phiên đăng nhập
-            const userStr = localStorage.getItem("user");
-            if (!userStr) {
+            const userName = getUsername();
+            const token = localStorage.getItem("token");
+
+            if (!userName || !token) {
                 toast.error("Vui lòng đăng nhập hệ thống để sử dụng dịch vụ!");
                 navigate("/login");
                 return;
             }
-            const user = JSON.parse(userStr);
 
-            const res = await fetch("/api/services/book", {
+            const res = await fetch("/HotelManagementServer/api/secure/service-booking", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({
-                    userName: user.userName, // Truyền động giá trị username đang đăng nhập (V dụ: thien@gmail.com)
+                    userName: userName,
                     serviceId: selectedService.serviceId,
                     serviceName: selectedService.name,
-                    price: selectedService.price
+                    price: selectedService.price,
+                    quantity: 1
                 })
             });
+            
             const data = await res.json();
             if (!res.ok) throw new Error(data.message);
 
             toast.success(data.message);
             handleCloseModal();
-            
-            navigate(`/receipt/${data.receiptId}`); 
+
+            navigate(`/receipt/${data.data.receiptId}`); 
         } catch (error) {
             toast.error(error.message || "Xảy ra sự cố khi đăng ký dịch vụ.");
         } finally {
@@ -98,13 +115,13 @@ const Services = () => {
                 {services.map((service) => (
                     <Col xl={4} md={6} key={service.serviceId}>
                         <Card className="glass-card-static service-card border-0 shadow-lg h-100">
-                            
+
                             <Stack className="service-img-wrapper">
                                 <Badge bg="dark" className="service-badge-overlay border border-warning text-gold px-3 py-2 rounded-pill fw-bold">
                                     {service.type || "Nổi bật"}
                                 </Badge>
-                                <Image 
-                                    src={service.imgURL} 
+                                <Image
+                                    src={service.imgURL}
                                     alt={service.name}
                                     className="service-img"
                                 />
@@ -114,14 +131,14 @@ const Services = () => {
                                 <Stack>
                                     <Card.Title as="h4" className="text-white fw-bold mb-2">{service.name}</Card.Title>
                                 </Stack>
-                                
+
                                 <Stack direction="horizontal" className="justify-content-between align-items-end mt-4 border-top border-secondary pt-3 opacity-75">
                                     <Stack>
                                         <Stack as="span" className="text-white-50 small mb-1">Mức giá tham khảo:</Stack>
                                         <Stack as="span" className="text-gold fw-bold fs-5">{formatVND(service.price)}</Stack>
                                     </Stack>
-                                    <Button 
-                                        variant="outline-warning" 
+                                    <Button
+                                        variant="outline-warning"
                                         className="rounded-pill fw-bold px-4"
                                         onClick={() => {
                                             setSelectedService(service);
@@ -132,46 +149,46 @@ const Services = () => {
                                     </Button>
                                 </Stack>
                             </Card.Body>
-                            
+
                         </Card>
                     </Col>
                 ))}
             </Row>
 
-            <Modal 
-                show={showModal} 
-                onHide={handleCloseModal} 
-                centered 
+            <Modal
+                show={showModal}
+                onHide={handleCloseModal}
+                centered
                 contentClassName="glass-modal-content"
                 backdrop="static"
             >
                 <Modal.Header closeButton closeVariant="white" className="glass-modal-header">
                     <Modal.Title as="h5" className="text-gold fw-bold luxury-title mb-0">Xác Nhận Đăng Ký</Modal.Title>
                 </Modal.Header>
-                
+
                 <Modal.Body className="text-center py-5">
                     <Stack as="i" className="bi bi-question-circle text-gold modal-service-icon mb-4"></Stack>
                     <Stack as="span" className="text-white fs-5 mb-2">Bạn có chắc chắn muốn đăng ký dịch vụ</Stack>
                     <Stack as="span" className="text-gold fw-bold fs-4 mb-4">{selectedService?.name}</Stack>
-                    
+
                     <Stack className="bg-dark p-3 rounded border border-secondary mx-4">
                         <Stack as="span" className="text-white-50 small mb-1">Chi phí sẽ được tự động cộng vào biên lai:</Stack>
                         <Stack as="span" className="text-white fw-bold fs-5">{selectedService ? formatVND(selectedService.price) : ""}</Stack>
                     </Stack>
                 </Modal.Body>
-                
+
                 <Modal.Footer className="glass-modal-header justify-content-center border-0 pb-4">
-                    <Button 
-                        variant="outline-light" 
-                        className="rounded-pill px-4 fw-bold me-2" 
+                    <Button
+                        variant="outline-light"
+                        className="rounded-pill px-4 fw-bold me-2"
                         onClick={handleCloseModal}
                         disabled={isBooking}
                     >
                         Hủy bỏ
                     </Button>
-                    <Button 
-                        variant="warning" 
-                        className="rounded-pill px-4 fw-bold text-dark btn-luxury-glow" 
+                    <Button
+                        variant="warning"
+                        className="rounded-pill px-4 fw-bold text-dark btn-luxury-glow"
                         onClick={confirmBookingService}
                         disabled={isBooking}
                     >

@@ -9,21 +9,62 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const limitPerPage = 6;
+    const limitPerPage = 6; 
 
     useEffect(() => {
         setLoading(true);
-        fetch(`/api/rooms?page=${currentPage}&limit=${limitPerPage}`)
-            .then(res => res.json())
+
+        const pad = (num) => String(num).padStart(2, '0');
+        const now = new Date();
+        const checkInStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+       fetch(`http://localhost:8080/HotelManagementServer/api/rooms?page=${currentPage}&checkIn=${encodeURIComponent(checkInStr)}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Lỗi cấu hình yêu cầu từ hệ thống.");
+                return res.json();
+            })
             .then(response => {
-                const roomData = response.data || response || [];
-                setRooms(roomData);
-                setTotalPages(response.totalPages || 1);
+                console.log("Cục JSON gốc từ Backend:", response);
+
+                let roomList = [];
+                if (response.data && Array.isArray(response.data.rooms)) {
+                    roomList = response.data.rooms; 
+                } else if (Array.isArray(response.data)) {
+                    roomList = response.data; 
+                } else if (Array.isArray(response.rooms)) {
+                    roomList = response.rooms; 
+                } else if (Array.isArray(response)) {
+                    roomList = response;
+                }
+
+
+               const mappedRooms = roomList.map(room => ({
+                    id: room.roomId,                    
+                    name: room.name,                     
+                    roomTypeName: room.roomTypeName,    
+                    price: room.price,                   
+                    capacity: room.capacity,             
+                    avatarUrl: room.thumbnail || "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",             
+                    beds: room.beds || []
+                }));
+
+                setRooms(mappedRooms);
+
+                if (roomList.length > limitPerPage) {
+                    setTotalPages(currentPage + 1);
+                } else {
+                    setTotalPages(currentPage); 
+                }
+
                 setTimeout(() => {
                     setLoading(false);
-                }, 1000);
+                }, 500);
             })
-            .catch(error => console.error("Lỗi khi kéo dữ liệu phòng:", error));
+            .catch(error => {
+                console.error("Lỗi khi kéo dữ liệu phòng:", error);
+                setRooms([]);
+                setLoading(false);
+            });
     }, [currentPage]);
 
     const formatVND = (price) => {
@@ -54,81 +95,34 @@ const Home = () => {
                 rooms={rooms} 
                 loading={loading} 
             />
+
+            {totalPages > 1 && (
+                <Stack direction="horizontal" className="justify-content-center mt-5">
+                    <Pagination className="custom-gold-pagination">
+                        <Pagination.Prev
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        />
+
+                        {[...Array(totalPages)].map((_, index) => (
+                            <Pagination.Item
+                                key={index + 1}
+                                active={index + 1 === currentPage}
+                                onClick={() => handlePageChange(index + 1)}
+                            >
+                                {index + 1}
+                            </Pagination.Item>
+                        ))}
+
+                        <Pagination.Next
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                        />
+                    </Pagination>
+                </Stack>
+            )}
         </Container>
     );
 };
+
 export default Home;
-
-        // <Container className="my-5 py-5">
-        //     <Stack className="text-center mb-5">
-        //         <Stack as="h2" className="text-gold luxury-title display-5 fw-bold mb-3">
-        //             Phòng Nổi Bật
-        //         </Stack>
-        //     </Stack>
-        //     {loading ? (
-        //         <MySpinner />
-        //     ) : (
-        //         <>
-        //             <Row className="g-4 justify-content-center">
-        //                 {rooms?.map((room) => (
-        //                     <Col lg={4} md={6} sm={12} key={room.id}>
-        //                         <Card className="glass-card h-100 border-0 shadow-lg">
-        //                             <Stack className="position-relative overflow-hidden">
-        //                                 <Card.Img variant="top" src={room.image} className="room-img" />
-        //                             </Stack>
-        //                             <Card.Body className="d-flex flex-column p-4">
-        //                                 <Card.Title className="text-white fw-bold fs-4 mb-3">{room.name}</Card.Title>
-
-        //                                 <Stack direction="horizontal" className="mt-auto justify-content-between align-items-end">
-        //                                     <Stack>
-        //                                         <Card.Text as="small" className="text-white-50 d-block mb-1">
-        //                                             Giá mỗi đêm từ
-        //                                         </Card.Text>
-        //                                         <Card.Text as="span" className="price-tag fs-5">
-        //                                             {formatVND(room.price)}
-        //                                         </Card.Text>
-        //                                     </Stack>
-        //                                     <Button variant="outline-light" className="btn-luxury-glow px-4 py-2 fw-bold">
-        //                                         Đặt ngay
-        //                                     </Button>
-        //                                 </Stack>
-
-        //                             </Card.Body>
-        //                         </Card>
-        //                     </Col>
-        //                 ))}
-        //             </Row>
-
-
-        //             {totalPages > 1 && (
-        //                 <Stack direction="horizontal" className="justify-content-center mt-5">
-        //                     <Pagination className="custom-gold-pagination">
-        //                         <Pagination.Prev
-        //                             onClick={() => handlePageChange(currentPage - 1)}
-        //                             disabled={currentPage === 1}
-        //                         />
-
-        //                         {[...Array(totalPages)].map((_, index) => (
-        //                             <Pagination.Item
-        //                                 key={index + 1}
-        //                                 active={index + 1 === currentPage}
-        //                                 onClick={() => handlePageChange(index + 1)}
-        //                             >
-        //                                 {index + 1}
-        //                             </Pagination.Item>
-        //                         ))}
-
-        //                         <Pagination.Next
-        //                             onClick={() => handlePageChange(currentPage + 1)}
-        //                             disabled={currentPage === totalPages}
-        //                         />
-        //                     </Pagination>
-        //                 </Stack>
-        //             )}
-        //         </>
-        //     )}
-        // </Container>
-
-    // );
-// }
-

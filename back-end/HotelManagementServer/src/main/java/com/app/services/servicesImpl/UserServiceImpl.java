@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -134,7 +135,7 @@ public class UserServiceImpl implements UserService {
         if (r == null) {
             throw new RuntimeException("Lỗi hệ thống: Không tìm thấy quyền CUSTOMER trong Database");
         }
-        
+
         userData.setRoleId(r.getRoleId());
         User u = this.createUser(userData);
 
@@ -142,5 +143,30 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Không thể lưu tài khoản vào Database do lỗi hệ thống");
         }
         return u;
+    }
+
+    @Override
+    @Transactional
+    public User processGoogleUser(String email, String name) {
+        User existingUser = this.userRepository.getUserByEmail(email); 
+
+        if (existingUser != null) {
+            return existingUser; 
+        }
+
+        User newUser = new User();
+        newUser.setUsername(email); 
+        newUser.setEmail(email); 
+        newUser.setName(name);
+        newUser.setPhone(""); 
+        newUser.setIsDeleted((short) 0); 
+        Role customerRole = new Role(3); 
+        newUser.setRoleId(customerRole);
+
+        
+        newUser.setPassword(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder()
+                .encode(java.util.UUID.randomUUID().toString()));
+
+        return this.userRepository.createUser(newUser); 
     }
 }

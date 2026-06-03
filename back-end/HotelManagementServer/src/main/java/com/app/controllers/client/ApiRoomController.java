@@ -21,7 +21,6 @@ public class ApiRoomController {
     private RoomService roomService;
 
     @GetMapping("/rooms")
-    // Tự động cắt query param trong URL ra để bỏ vào DTO
     public ResponseEntity<?> getRoomsForClient(@Valid @ModelAttribute ApiRoomSearchCriteria criteria) {
         try {
             ApiRoomPageDTO pageData = this.roomService.getRoomsForClient(criteria);
