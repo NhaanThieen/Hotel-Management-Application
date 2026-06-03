@@ -22,4 +22,9 @@ public class RoomBookingRepositoryImpl implements RoomBookingRepository {
         session.persist(roomBooking);
         return roomBooking;
     }
+
+    @Override
+    public Roombooking getRoomBookingById(Integer id) {
+        return this.sessionFactory.getCurrentSession().get(Roombooking.class, id);
+    }
 }

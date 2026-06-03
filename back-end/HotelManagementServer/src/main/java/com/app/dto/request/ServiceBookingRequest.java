@@ -7,7 +7,7 @@ public class ServiceBookingRequest {
     private Integer serviceId;
     private String serviceName;
     private BigDecimal price;
-    private Integer quantity;
+    private Integer stock;
 
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
@@ -21,6 +21,6 @@ public class ServiceBookingRequest {
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
 
-    public Integer getQuantity() { return quantity; }
-    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public Integer getStock() { return stock; }
+    public void setStock(Integer stock) { this.stock = stock; }
 }

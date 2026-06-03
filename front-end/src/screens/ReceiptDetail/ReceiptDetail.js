@@ -31,7 +31,6 @@ const ReceiptDetail = () => {
 
 
     useEffect(() => {
-
         const vnpResponse = searchParams.get("vnp_ResponseCode");
         const zaloResponse = searchParams.get("status");
 
@@ -41,7 +40,15 @@ const ReceiptDetail = () => {
             setPaymentStatus("failed");
         }
 
-        fetch(`/api/receipts/${id}`)
+        const token = localStorage.getItem("token"); 
+
+        fetch(`/HotelManagementServer/api/receipts/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            }
+        })
             .then(res => {
                 if (!res.ok) throw new Error("Biên lai không tồn tại trên hệ thống.");
                 return res.json();
@@ -55,7 +62,7 @@ const ReceiptDetail = () => {
                 toast.error("Không tìm thấy thông tin biên lai này!");
                 navigate("/my-bookings");
             });
-    }, [id, navigate]);
+    }, [id, navigate, searchParams]); 
 
     const formatVND = (price) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -125,8 +132,8 @@ const ReceiptDetail = () => {
                                     </Stack>
                                 </Stack>
 
-                                {receipt?.services?.map((service) => (
-                                    <Stack key={service.roomBookingServiceId} direction="horizontal" className="justify-content-between p-3 receipt-item-row align-items-center flex-wrap gap-2">
+                                {receipt?.services?.map((service, index) => (
+                                    <Stack key={index} direction="horizontal" className="justify-content-between p-3 receipt-item-row align-items-center flex-wrap gap-2">
                                         <Stack>
                                             <Stack as="span" className="text-white fw-bold">Dịch vụ tiện ích: {service.serviceName}</Stack>
                                             <Stack as="span" className="text-white-50 small">Số lượng đăng ký: {service.quantity}</Stack>

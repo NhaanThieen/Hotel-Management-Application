@@ -26,21 +26,17 @@ public class ServiceBookingServiceImpl implements ServiceBookingService {
             throw new IllegalStateException("Khách hàng phải đang nhận phòng (Check-in) mới được đặt thêm dịch vụ.");
         }
 
-        // 2. Lấy thông tin dịch vụ (Đã bị khóa PESSIMISTIC_WRITE ở Repo)
         com.app.pojo.Service service = serviceBookingRepository.getServiceById(request.getServiceId());
         if (service == null || (service.getIsDeleted() != null && service.getIsDeleted() == 1)) {
             throw new NoSuchElementException("Dịch vụ không tồn tại hoặc đã ngừng kinh doanh.");
         }
 
-        int qtyToBuy = (request.getQuantity() != null && request.getQuantity() > 0) ? request.getQuantity() : 1;
+        int qtyToBuy = (request.getStock() != null && request.getStock() > 0) ? request.getStock() : 1;
 
-
-        if (service.getQuantity() != null) {
-            if (service.getQuantity() < qtyToBuy) {
-                throw new IllegalStateException("Rất tiếc, dịch vụ này số lượng không đủ hoặc đã hết hàng.");
-            }
-            service.setQuantity(service.getQuantity() - qtyToBuy);
+        if (service.getStock() < qtyToBuy) {
+            throw new IllegalStateException("Rất tiếc, dịch vụ này số lượng không đủ hoặc đã hết hàng.");
         }
+        service.setStock(service.getStock() - qtyToBuy);
 
         if (activeBooking.getRoombookingdetailList() == null || activeBooking.getRoombookingdetailList().isEmpty()) {
             throw new IllegalStateException("Lỗi dữ liệu: Đơn đặt phòng không có chi tiết phòng.");
@@ -50,7 +46,9 @@ public class ServiceBookingServiceImpl implements ServiceBookingService {
         Roombookingservice newServiceRecord = new Roombookingservice();
         newServiceRecord.setRoomBookingDetailId(detail);
         newServiceRecord.setServiceId(service);
-        newServiceRecord.setQuantity(qtyToBuy);
+        
+        newServiceRecord.setQuantity(qtyToBuy); 
+        
         newServiceRecord.setUnitServicePrice(service.getPrice()); 
         newServiceRecord.setCreateAt(new java.util.Date());
 

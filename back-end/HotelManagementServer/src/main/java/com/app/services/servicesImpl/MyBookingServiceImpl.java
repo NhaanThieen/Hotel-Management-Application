@@ -1,5 +1,6 @@
 package com.app.services.servicesImpl;
 
+import com.app.dto.response.ReceiptResponseDTO;
 import com.app.dto.response.mybooking.MyBookingHistoryRawResponse;
 import com.app.dto.response.mybooking.MyBookingHistoryResponse;
 import com.app.dto.response.mybooking.MyBookingHistoryDetailResponse;
@@ -18,6 +19,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import com.app.repositories.MyBookingRepository;
+import com.app.repositories.RoomBookingRepository;
 import com.app.services.MyBookingService;
 
 @org.springframework.stereotype.Service
@@ -32,6 +34,11 @@ public class MyBookingServiceImpl implements MyBookingService {
     
     @Autowired
     private com.app.repositories.FeedbackRepository feedbackRepository;
+    
+    
+    @Autowired
+    private RoomBookingRepository roomBookingRepository;
+    
 
     private String formatDate(java.util.Date date, DateTimeFormatter formatter) {
         if (date == null) return null;
@@ -123,5 +130,68 @@ public class MyBookingServiceImpl implements MyBookingService {
         BigDecimal voucher = booking.getVoucherDiscountMoney() != null ? booking.getVoucherDiscountMoney() : BigDecimal.ZERO;
         BigDecimal total = roomAmount.add(vat).subtract(voucher);
         return total.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : total.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    @Override
+    public ReceiptResponseDTO getReceiptDetail(Integer bookingId) {
+        Roombooking booking = roomBookingRepository.getRoomBookingById(bookingId);
+        if (booking == null) {
+            throw new IllegalArgumentException("Không tìm thấy hóa đơn");
+        }
+
+        User user = booking.getUserId();
+        
+        Roombookingdetail mainDetail = null;
+        String roomTypeName = "N/A";
+        if (booking.getRoombookingdetailList() != null && !booking.getRoombookingdetailList().isEmpty()) {
+            mainDetail = booking.getRoombookingdetailList().get(0);
+            if (mainDetail.getRoomId() != null && mainDetail.getRoomId().getRoomTypeId() != null) {
+                roomTypeName = mainDetail.getRoomId().getRoomTypeId().getName();
+            }
+        }
+
+        List<ReceiptResponseDTO.ServiceItemDTO> servicesUsed = new java.util.ArrayList<>();
+        BigDecimal totalServicesAmount = BigDecimal.ZERO;
+
+        if (mainDetail != null && mainDetail.getRoombookingserviceList() != null) {
+            for (Roombookingservice srv : mainDetail.getRoombookingserviceList()) {
+                servicesUsed.add(ReceiptResponseDTO.ServiceItemDTO.builder()
+                        .serviceName(srv.getServiceName())
+                        .quantity(srv.getQuantity())
+                        .unitPriceAtUse(srv.getUnitServicePrice())
+                        .build());
+                totalServicesAmount = totalServicesAmount.add(
+                        srv.getUnitServicePrice().multiply(new BigDecimal(srv.getQuantity()))
+                );
+            }
+        }
+
+        long diffTime = booking.getBookingCheckOut().getTime() - booking.getBookingCheckIn().getTime();
+        int totalNights = (int) Math.ceil((double) diffTime / (1000 * 60 * 60 * 24));
+        if (totalNights <= 0) totalNights = 1;
+
+        BigDecimal roomPricePerNight = mainDetail != null ? mainDetail.getPrice() : BigDecimal.ZERO;
+        BigDecimal totalRoomAmount = roomPricePerNight.multiply(new BigDecimal(totalNights));
+
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm - yyyy-MM-dd");
+
+        return ReceiptResponseDTO.builder()
+                .receiptId(booking.getRoomBookingId())
+                .userName(user != null ? user.getName() : "Khách ẩn danh")
+                .userPhone(user != null ? user.getPhone() : "Không xác định")
+                .userPaidId(user != null ? String.valueOf(user.getUserId()) : "N/A")
+                .timeCheckIn(sdf.format(booking.getBookingCheckIn()))
+                .timeCheckOut(sdf.format(booking.getBookingCheckOut()))
+                .staffId(booking.getStaffId() != null ? String.valueOf(booking.getStaffId().getUserId()) : "Hệ Thống")
+                .staffName(booking.getStaffId() != null ? booking.getStaffId().getName() : "Auto-Booking")
+                .vipDiscountAmount(booking.getVoucherDiscountMoney() != null ? booking.getVoucherDiscountMoney() : BigDecimal.ZERO)
+                .totalPrice(booking.getTotalAmount())
+                .roomAmount(totalRoomAmount)
+                .roomName(mainDetail != null ? mainDetail.getRoomName() : "N/A")
+                .roomTypeName(roomTypeName)
+                .pricePerNight(roomPricePerNight)
+                .totalNights(totalNights)
+                .services(servicesUsed)
+                .build();
     }
 }
