@@ -7,7 +7,6 @@ package com.app.services.servicesImpl;
 import com.app.dto.request.ApiRoomSearchCriteria;
 import com.app.dto.request.RoomCreateDTO;
 import com.app.dto.request.RoomSearchCriteria;
-import com.app.dto.response.ApiResponse;
 import com.app.dto.response.ApiRoomPageDTO;
 import com.app.dto.response.ListRoomAdminRoomPageDTO;
 import com.app.pojo.Bed;

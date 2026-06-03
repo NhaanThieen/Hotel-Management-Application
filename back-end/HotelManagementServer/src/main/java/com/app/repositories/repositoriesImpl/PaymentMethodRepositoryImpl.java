@@ -25,4 +25,12 @@ public class PaymentMethodRepositoryImpl implements PaymentMethodRepository {
         query.setParameter("name", name);
         return query.getSingleResultOrNull();
     }
+
+    @Override
+    public Paymentmethod getPaymentMethodById(Integer id) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Paymentmethod> query = session.createQuery("FROM Paymentmethod WHERE paymentMethodId = :id", Paymentmethod.class);
+        query.setParameter("id", id);
+        return query.getSingleResultOrNull();
+    }
 }

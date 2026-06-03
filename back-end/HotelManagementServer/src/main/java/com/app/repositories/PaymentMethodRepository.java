@@ -9,4 +9,5 @@ import com.app.pojo.Paymentmethod;
 
 public interface PaymentMethodRepository {
     public Paymentmethod getPaymentMethodByName(String name);
+    public Paymentmethod getPaymentMethodById(Integer id);
 }

@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
             "com.app.services",
             "com.app.dto",
             "com.app.filters",
-            "com.app.utils"
+            "com.app.utils",
+            "com.app.enum",
+            "com.app.pattern"
         }
 )
 public class RootAppContextConfig {

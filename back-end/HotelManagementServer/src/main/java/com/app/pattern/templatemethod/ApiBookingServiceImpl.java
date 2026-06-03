@@ -20,13 +20,15 @@ import com.app.repositories.RoomRepository;
 import com.app.repositories.ServiceRepository;
 import com.app.repositories.UserRepository;
 import com.app.repositories.VoucherRepository;
+import com.app.services.RoomBookingService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ApiBookingServiceImpl extends AbstractBookingProcess {
+@org.springframework.stereotype.Service
+public class ApiBookingServiceImpl extends AbstractBookingProcess implements RoomBookingService {
 
     @Autowired
     private RoomRepository roomRepository;
@@ -199,13 +201,17 @@ public class ApiBookingServiceImpl extends AbstractBookingProcess {
     protected Roombooking saveToDb(Room room, ApiBookingRequestDTO request, BookingPriceContext priceContext) {
         User u = this.userRepository.getUserById(request.getUserBookingId());
         Roombookingstatus rbs = this.roomBookingStatusRepository.getRoomBookingStatusByName("Pending");
-        Paymentmethod payment = new Paymentmethod(request.getPaymentMethodId());
+        Paymentmethod payment = this.paymentMethodRepository.getPaymentMethodById(request.getPaymentMethodId());
 
         if (u == null) {
             throw new IllegalArgumentException("Không có user đặt phòng");
         }
         if (rbs == null) {
             throw new IllegalArgumentException("Hệ thống không có roombookingstatus Pending");
+        }
+        
+        if (payment == null) {
+            throw new IllegalArgumentException("Hệ thống không có payment method");
         }
 
         Voucher voucher = null;
