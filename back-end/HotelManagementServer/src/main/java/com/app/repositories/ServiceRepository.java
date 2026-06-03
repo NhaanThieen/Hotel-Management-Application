@@ -5,6 +5,7 @@
 package com.app.repositories;
 
 import com.app.pojo.Service;
+import java.util.List;
 
 
 public interface ServiceRepository {

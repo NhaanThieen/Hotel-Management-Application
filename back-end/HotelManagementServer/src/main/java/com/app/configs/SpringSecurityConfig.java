@@ -17,6 +17,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import org.springframework.security.config.Customizer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 // Hiện thực sẵn các bean cho spring security. Cần sửa dụng cái nào thì override lại bean đó
@@ -95,5 +100,21 @@ public class SpringSecurityConfig {
                 .expiredUrl("/admin/login/?expired=true")); // Nếu máy khác đăng nhập cùng tài khoản thì chuyển hướng máy cũ
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Cho phép 2 cổng React và Vite
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173"));
+        // CHÚ Ý: Bắt buộc phải có OPTIONS để pass qua Preflight Request
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // Áp dụng cấu hình này cho mọi API
+        source.registerCorsConfiguration("/api/**", configuration);
+        return source;
     }
 }
