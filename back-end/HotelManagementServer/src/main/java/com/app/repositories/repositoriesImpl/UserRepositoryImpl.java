@@ -101,7 +101,15 @@ public class UserRepositoryImpl implements UserRepository {
 
         query.setMaxResults(pageSize);
         query.setFirstResult(start);
-        
+
         return query.getResultList();
+    }
+
+    @Override
+    public User getUserById(Integer id) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Query<User> query = session.createQuery("FROM User WHERE userId=:id", User.class);
+        query.setParameter("userId", id);
+        return query.getSingleResultOrNull();
     }
 }

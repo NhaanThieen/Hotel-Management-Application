@@ -17,6 +17,7 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
@@ -59,6 +60,7 @@ public class Room implements Serializable {
     private BigDecimal price;
     @Column(name = "capacity")
     private Integer capacity;
+    @Version
     @Column(name = "version")
     private Integer version;
     @Lob

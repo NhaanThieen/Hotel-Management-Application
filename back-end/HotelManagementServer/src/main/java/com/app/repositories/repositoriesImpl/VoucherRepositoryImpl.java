@@ -4,9 +4,8 @@
  */
 package com.app.repositories.repositoriesImpl;
 
-import com.app.pojo.Roomtype;
-import com.app.repositories.RoomTypeRepository;
-import java.util.List;
+import com.app.pojo.Voucher;
+import com.app.repositories.VoucherRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -14,20 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class RoomTypeRepositoryImpl implements RoomTypeRepository {
+public class VoucherRepositoryImpl implements VoucherRepository {
 
     @Autowired
     private SessionFactory sessionFactory;
 
-    public List<Roomtype> getRoomTypes() {
+    @Override
+    public Voucher getVoucherById(Integer id) {
         Session session = sessionFactory.getCurrentSession();
-        Query<Roomtype> query = session.createQuery("FROM Roomtype", Roomtype.class);
-        return query.getResultList();
+        Query<Voucher> query = session.createQuery("FROM Voucher WHERE voucherId = :id", Voucher.class);
+        query.setParameter("id", id);
+        return query.getSingleResultOrNull();
     }
 
-    @Override
-    public Roomtype getRoomTypeById(Integer id) {
-        Session session = sessionFactory.getCurrentSession();
-        return session.get(Roomtype.class, id);
-    }
 }

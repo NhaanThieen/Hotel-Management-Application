@@ -15,4 +15,5 @@ public interface UserRepository {
     public User getUserByPhone(String phone);
     public List<User> getUsers(UserSearchCriteria criteria);
     public User createUser(User user);
+    public User getUserById(Integer id);
 }

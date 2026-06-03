@@ -21,8 +21,8 @@ INSERT INTO MemberTier (type, memberDiscountPercent) VALUES
 -- Mật khẩu mặc định đặt tạm là '123456' để test login
 -- ============================================================================
 INSERT INTO User (name, username, email, password, phone, isDeleted, roleId, avatar, memberTierId) VALUES 
-('Nguyễn Quản Trị', 'admin', '2351050119nhan@ou.edu.vn' ,'123456', '0901234567', 0, 1, 'https://res.cloudinary.com/demo/image/upload/v1/avatar/admin.png', NULL),
-('Trần Lễ Tân 1', 'letan1', NULL ,'123456', '0907654321', 0, 2, 'https://res.cloudinary.com/demo/image/upload/v1/avatar/letan1.png', NULL),
+('Nguyễn Quản Trị', 'admin', '2351050119nhan@ou.edu.vn' ,'$2a$10$ebmWjHz6Iz/vRf6cc9DZpuNwAONIzGeRJZNI00cHY8d4RTh/LuOku', '0901234567', 0, 1, 'https://res.cloudinary.com/demo/image/upload/v1/avatar/admin.png', NULL),
+('Trần Lễ Tân 1', 'letan1', NULL ,'$2a$10$ebmWjHz6Iz/vRf6cc9DZpuNwAONIzGeRJZNI00cHY8d4RTh/LuOku', '0907654321', 0, 2, 'https://res.cloudinary.com/demo/image/upload/v1/avatar/letan1.png', NULL),
 ('Lê Lễ Tân 2', 'letan2', NULL ,'123456', '0912345678', 0, 2, 'https://res.cloudinary.com/demo/image/upload/v1/avatar/letan2.png', NULL),
 ('Phạm Khách Đồng', 'khachdong', NULL ,'123456', '0981112222', 0, 3, 'https://res.cloudinary.com/demo/image/upload/v1/avatar/user1.png', 1),
 ('Hoàng Khách Bạc', 'khachbac', NULL ,'123456', '0983334444', 0, 3, 'https://res.cloudinary.com/demo/image/upload/v1/avatar/user2.png', 2),
@@ -137,8 +137,8 @@ INSERT INTO Voucher (name, quantity, percentDiscount, maxDiscount, minRequire, i
 -- 9. INSERT PAYMENT METHOD & ROOM BOOKING STATUS
 -- ============================================================================
 INSERT INTO PaymentMethod (name) VALUES 
-('Tiền mặt'),
-('Chuyển khoản ngân hàng');
+('Cash'),
+('Bank Transfer');
 
 INSERT INTO RoomBookingStatus (name) VALUES 
 ('Pending'),

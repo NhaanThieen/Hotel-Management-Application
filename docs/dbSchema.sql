@@ -155,6 +155,7 @@ CREATE TABLE RoomBooking (
     expiredTime DATETIME NOT NULL, -- Nếu sau thời gian này mà khách không tới thì hủy roombooking này
     voucherDiscountMoney DECIMAL(15,2) DEFAULT 0.00,
     depositAmount DECIMAL(15,2) DEFAULT 0.00, -- Tiền cọc khi đặt phòng
+    surcharge DECIMAL(15,2) DEFAULT 0.00, -- Tiền phụ thu
     bookingSource VARCHAR(100) NULL,
     note TEXT NULL,
     staffName VARCHAR(100) NULL, -- lưu snapshot tên nhân viên đặt hộ tại quầy

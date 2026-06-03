@@ -4,9 +4,8 @@
  */
 package com.app.repositories.repositoriesImpl;
 
-import com.app.pojo.Roomtype;
-import com.app.repositories.RoomTypeRepository;
-import java.util.List;
+import com.app.pojo.Roombookingstatus;
+import com.app.repositories.RoomBookingStatusRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -14,20 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class RoomTypeRepositoryImpl implements RoomTypeRepository {
+public class RoomBookingStatusRepositoryImpl implements RoomBookingStatusRepository {
 
     @Autowired
     private SessionFactory sessionFactory;
 
-    public List<Roomtype> getRoomTypes() {
-        Session session = sessionFactory.getCurrentSession();
-        Query<Roomtype> query = session.createQuery("FROM Roomtype", Roomtype.class);
-        return query.getResultList();
-    }
-
     @Override
-    public Roomtype getRoomTypeById(Integer id) {
+    public Roombookingstatus getRoomBookingStatusByName(String name) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Roomtype.class, id);
+        Query<Roombookingstatus> query = session.createQuery("FROM Roombookingstatus WHERE LOWER(name) = LOWER(:name)", Roombookingstatus.class);
+        query.setParameter("name", name);
+        return query.getSingleResultOrNull();
     }
 }

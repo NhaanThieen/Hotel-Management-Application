@@ -14,8 +14,10 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Hibernate;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -140,7 +142,7 @@ public class RoomRepositoryImpl implements RoomRepository {
             // Lấy roomId của đối tượng roomId
             sq.select(rbdRoot.get("roomId").get("roomId"))
                     .where(subPredicates.toArray(Predicate[]::new));
-            
+
             // Thêm vào predicate chính là không lấy những room trong đây
             predicates.add(cb.not(root.get("roomId").in(sq)));
         }
@@ -200,5 +202,53 @@ public class RoomRepositoryImpl implements RoomRepository {
         Session session = sessionFactory.getCurrentSession();
         session.persist(room);
         return room;
+    }
+
+    @Override
+    public Room getBasicRoomById(Integer roomId) {
+        Session session = sessionFactory.getCurrentSession();
+        // Sử dụng + để sau này muốn join thêm bảng nào thì ghi vào
+
+        // Chỉ get những trường EAGER ManytoOne
+        String hql = "SELECT r FROM Room r "
+                + "LEFT JOIN FETCH r.roomStatusId "
+                + "LEFT JOIN FETCH r.roomTypeId "
+                + "WHERE r.roomId = :roomId AND r.isDeleted = 0";
+
+        Query<Room> query = session.createQuery(hql, Room.class);
+        query.setParameter("roomId", roomId);
+
+        return query.getSingleResultOrNull();
+    }
+
+    @Override
+    public Boolean isRoomBusy(Integer roomId, Date checkIn, Date checkOut) {
+        Session session = sessionFactory.getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+
+        // Dùng long để count do hibernate bắt buộc
+        CriteriaQuery<Roombookingdetail> cq = cb.createQuery(Roombookingdetail.class);
+        Root<Roombookingdetail> rbdRoot = cq.from(Roombookingdetail.class);
+
+        Join<Roombookingdetail, Roombooking> rbJoin = rbdRoot.join("roomBookingId");
+
+        Predicate roomCondition = cb.equal(rbdRoot.get("roomId").get("roomId"), roomId);
+        Predicate trungA = cb.greaterThan(rbJoin.get("bookingCheckOut"), checkIn);
+        Predicate trungB = cb.lessThan(rbJoin.get("bookingCheckIn"), checkOut);
+        Predicate huy = cb.notEqual(rbJoin.get("roomBookingStatusId").get("name"), "Cancel");
+
+        cq.select(rbdRoot)
+                .where(cb.and(roomCondition, trungA, trungB, huy));
+
+        long count = session.createQuery(cq).getResultCount();
+        return count > 0;
+    }
+
+    @Override
+    public void lockRoom(Room room) {
+        // Hibernate sẽ tự động so sánh version của room (nhờ vào việc cache dữ liệu) -> Trước đó phải getRoom thì mới chạy được lệnh này
+        Session session = sessionFactory.getCurrentSession();
+        // Ép Hibernate tăng version của phòng này lên 1 đơn vị ngay lập tức
+        session.lock(room, LockMode.OPTIMISTIC_FORCE_INCREMENT);
     }
 }

@@ -131,7 +131,7 @@ public class RoomServiceImpl implements RoomService {
         }
         // <0 là A < B
         if (roomDTO.getPrice().compareTo(rt.getPrice()) < 0) {
-            throw new IllegalArgumentException(String.format(java.util.Locale.of("vi", "VN"), "Số tiền không được nhỏ hơn %,d VNĐ", rt.getPrice().longValue()));
+            throw new IllegalArgumentException(String.format(java.util.Locale.forLanguageTag("vi-VN"), "Số tiền không được nhỏ hơn %,d VNĐ", rt.getPrice().longValue()));
         }
         room.setRoomName(roomDTO.getName());
         room.setCapacity(roomDTO.getCapacity());
@@ -248,7 +248,7 @@ public class RoomServiceImpl implements RoomService {
             roomDTO.setBeds(bedDTOs);
             roomDTOs.add(roomDTO);
         }
-        
+
         ApiRoomPageDTO responsePage = new ApiRoomPageDTO();
         responsePage.setRooms(roomDTOs);
         int currentPage = (roomData.getPage() != null && roomData.getPage() > 0) ? roomData.getPage() : 1;

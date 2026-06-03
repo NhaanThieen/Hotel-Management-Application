@@ -4,6 +4,7 @@
  */
 package com.app.dto.request;
 
+import com.app.enums.BookingSource;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -11,7 +12,6 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import org.springframework.format.annotation.DateTimeFormat;
 
 public class ApiBookingRequestDTO {
 
@@ -60,11 +60,15 @@ public class ApiBookingRequestDTO {
             this.quantity = quantity;
         }
         
-        
     }
 
     @NotNull(message = "Thiếu ID phòng")
     private Integer roomId;
+    
+    @NotNull(message = "Thiếu ID người đặt")
+    private Integer userBookingId;
+    
+    private Integer voucherId;
 
     @NotNull(message = "Thiếu ngày nhận phòng")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
@@ -84,6 +88,9 @@ public class ApiBookingRequestDTO {
     @NotNull(message = "Thiếu phương thức thanh toán")
     private Integer paymentMethodId;
 
+    @NotNull(message = "Thiếu nguồn đặt phòng")
+    private BookingSource bookingSource;
+
     private String note;
 
     // Optional
@@ -93,13 +100,15 @@ public class ApiBookingRequestDTO {
     public ApiBookingRequestDTO() {
     }
 
-    public ApiBookingRequestDTO(Integer roomId, Date checkIn, Date checkOut, BigDecimal clientPrice, Integer clientCapacity, Integer paymentMethodId, String note, List<ServiceOrderDTO> services) {
+    public ApiBookingRequestDTO(Integer roomId, Integer userBookingId, Date checkIn, Date checkOut, BigDecimal clientPrice, Integer clientCapacity, Integer paymentMethodId, BookingSource bookingSource, String note, List<ServiceOrderDTO> services) {
         this.roomId = roomId;
+        this.userBookingId = userBookingId;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.clientPrice = clientPrice;
         this.clientCapacity = clientCapacity;
         this.paymentMethodId = paymentMethodId;
+        this.bookingSource = bookingSource;
         this.note = note;
         this.services = services;
     }
@@ -116,6 +125,20 @@ public class ApiBookingRequestDTO {
      */
     public void setRoomId(Integer roomId) {
         this.roomId = roomId;
+    }
+
+    /**
+     * @return the userBookingId
+     */
+    public Integer getUserBookingId() {
+        return userBookingId;
+    }
+
+    /**
+     * @param userBookingId the userBookingId to set
+     */
+    public void setUserBookingId(Integer userBookingId) {
+        this.userBookingId = userBookingId;
     }
 
     /**
@@ -189,6 +212,20 @@ public class ApiBookingRequestDTO {
     }
 
     /**
+     * @return the bookingSource
+     */
+    public BookingSource getBookingSource() {
+        return bookingSource;
+    }
+
+    /**
+     * @param bookingSource the bookingSource to set
+     */
+    public void setBookingSource(BookingSource bookingSource) {
+        this.bookingSource = bookingSource;
+    }
+
+    /**
      * @return the note
      */
     public String getNote() {
@@ -215,4 +252,21 @@ public class ApiBookingRequestDTO {
     public void setServices(List<ServiceOrderDTO> services) {
         this.services = services;
     }
+
+    /**
+     * @return the voucherId
+     */
+    public Integer getVoucherId() {
+        return voucherId;
+    }
+
+    /**
+     * @param voucherId the voucherId to set
+     */
+    public void setVoucherId(Integer voucherId) {
+        this.voucherId = voucherId;
+    }
+    
+    
+    
 }
