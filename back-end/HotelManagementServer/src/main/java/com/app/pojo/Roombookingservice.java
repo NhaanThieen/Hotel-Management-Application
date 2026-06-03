@@ -22,12 +22,16 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 /**
  *
  * @author Nhaan
  */
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "roombookingservice")
 @NamedQueries({
     @NamedQuery(name = "Roombookingservice.findAll", query = "SELECT r FROM Roombookingservice r"),

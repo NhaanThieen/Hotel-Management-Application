@@ -159,12 +159,7 @@ CREATE TABLE RoomBooking (
     note TEXT NULL,
     staffName VARCHAR(100) NULL, -- lưu snapshot tên nhân viên đặt hộ tại quầy
     roomBookingStatusId INT NOT NULL,
-    
-    -- Cột Total sẽ dùng formula để tính. Lý do tại vì đang sử dụng khóa 
-    -- lạc quan, nếu khách gọi nhiều service thì dễ xảy ra đụng độ dẫn tới trãi
-    -- nghiệm kém hiệu quả, khi nào khách cần xem tổng tiền thì mới gọi forumla
-    -- lên để tính, không cần lưu hardrow.
-    
+    totalAmount DECIMAL(15,2) DEFAULT 0.00, -- Tổng tiền tạm tính của booking này, chưa trừ voucher hay giảm giá nào cả
     voucherId INT NULL,
     paymentMethodId INT NOT NULL,
     receiptId INT NULL, -- có thể null, do mới book chứ chưa thanh toán

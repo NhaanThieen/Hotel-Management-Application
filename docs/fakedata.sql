@@ -144,7 +144,10 @@ INSERT INTO RoomBookingStatus (name) VALUES
 ('Pending'),
 ('Cancel'),
 ('Timeout'),
-('Paid');
+('Paid'),
+('Deposited'),
+('Failed');
+
 
 -- ============================================================================
 -- 10. INSERT MANUAL DISCOUNT REASON (5 lý do đền bù sự cố thực tế)

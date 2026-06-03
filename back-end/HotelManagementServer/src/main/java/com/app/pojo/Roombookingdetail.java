@@ -24,12 +24,16 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 /**
  *
  * @author Nhaan
  */
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "roombookingdetail")
 @NamedQueries({
     @NamedQuery(name = "Roombookingdetail.findAll", query = "SELECT r FROM Roombookingdetail r"),

@@ -25,12 +25,16 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 /**
  *
  * @author Nhaan
  */
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "roombooking")
 @NamedQueries({
     @NamedQuery(name = "Roombooking.findAll", query = "SELECT r FROM Roombooking r"),
@@ -80,6 +84,8 @@ public class Roombooking implements Serializable {
     private BigDecimal voucherDiscountMoney;
     @Column(name = "depositAmount")
     private BigDecimal depositAmount;
+    @Column(name = "totalAmount")
+    private BigDecimal totalAmount;
     @Size(max = 100)
     @Column(name = "bookingSource")
     private String bookingSource;
@@ -279,6 +285,8 @@ public class Roombooking implements Serializable {
     public void setRoombookingdetailList(List<Roombookingdetail> roombookingdetailList) {
         this.roombookingdetailList = roombookingdetailList;
     }
+    
+    
 
     @Override
     public int hashCode() {
@@ -304,5 +312,18 @@ public class Roombooking implements Serializable {
     public String toString() {
         return "com.app.pojo.Roombooking[ roomBookingId=" + roomBookingId + " ]";
     }
-    
+
+    /**
+     * @return the totalAmount
+     */
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    /**
+     * @param totalAmount the totalAmount to set
+     */
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 }
