@@ -254,4 +254,9 @@ public class RoomServiceImpl implements RoomService {
         responsePage.setCurrentPage(currentPage);
         return responsePage;
     }
+
+    @Override
+    public List<Room> getRoomsForReceptionist() {
+        return roomRepository.getRoomsForReceptionist();
+    }
 }

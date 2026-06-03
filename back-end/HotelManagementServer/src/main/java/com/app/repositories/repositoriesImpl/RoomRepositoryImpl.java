@@ -246,9 +246,17 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public void lockRoom(Room room) {
-        // Hibernate sẽ tự động so sánh version của room (nhờ vào việc cache dữ liệu) -> Trước đó phải getRoom thì mới chạy được lệnh này
         Session session = sessionFactory.getCurrentSession();
-        // Ép Hibernate tăng version của phòng này lên 1 đơn vị ngay lập tức
+
         session.lock(room, LockMode.OPTIMISTIC_FORCE_INCREMENT);
     }
+
+    @Override
+    public List<Room> getRoomsForReceptionist() {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "SELECT r FROM Room r JOIN FETCH r.roomStatusId WHERE r.isDeleted = 0 OR r.isDeleted IS NULL ORDER BY r.roomName ASC";
+        Query<Room> query = session.createQuery(hql, Room.class);
+        return query.getResultList();
+    }
+    
 }

@@ -18,4 +18,5 @@ public interface RoomRepository {
     public Room saveRoom(Room room);
     public Boolean isRoomBusy(Integer roomId, Date checkIn, Date checkOut);
     public void lockRoom(Room room);
+    List<Room> getRoomsForReceptionist();
 }
