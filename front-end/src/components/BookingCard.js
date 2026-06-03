@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Stack, Badge, Row, Col, Button } from "react-bootstrap";
 
-const BookingCard = React.memo(({ item, formatVND, formatDate, onNavigate, onReview }) => {
+const BookingCard = React.memo(({ item, formatVND, formatDate, onNavigate, onReview, onCancel }) => {
     return (
         <Card className="glass-card-static booking-card border-0 shadow-lg p-4">
             <Card.Body className="p-0">
@@ -77,13 +77,31 @@ const BookingCard = React.memo(({ item, formatVND, formatDate, onNavigate, onRev
                             >
                                 <Stack as="i" className="bi bi-file-earmark-text me-2"></Stack>Xem hóa đơn
                             </Button>
-                            {item.type === "ROOM" && item.badgeText === "Đã trả phòng" && (
+                            {item.type === "ROOM" && item.badgeText === "Đã thanh toán" && !item.isReviewed && (
                                 <Button 
                                     variant="warning" 
                                     className="w-100 fw-bold rounded-pill mt-2 btn-luxury-glow"
                                     onClick={onReview}
                                 >
                                     <Stack as="i" className="bi bi-star-fill me-2 text-dark"></Stack>Đánh giá 
+                                </Button>
+                            )}
+
+                            {item.type === "ROOM" && item.badgeText === "Đã thanh toán" && item.isReviewed && (
+                                <Stack direction="horizontal" className="justify-content-center w-100 mt-3 text-gold">
+                                    <i className="bi bi-check2-circle me-2"></i> <span className="small fw-bold">Đã gửi đánh giá</span>
+                                </Stack>
+                            )}
+                            
+                           
+
+                            {item.type === "ROOM" && item.badgeText === "Chờ thanh toán" && (
+                                <Button 
+                                    variant="outline-danger" 
+                                    className="w-100 fw-bold rounded-pill mt-2"
+                                    onClick={onCancel}
+                                >
+                                    <Stack as="i" className="bi bi-x-circle me-2"></Stack>Hủy phòng
                                 </Button>
                             )}
                         </Stack>

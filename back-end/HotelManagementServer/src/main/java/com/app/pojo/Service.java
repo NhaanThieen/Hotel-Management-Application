@@ -65,6 +65,17 @@ public class Service implements Serializable {
     @ManyToOne(optional = false)
     private Servicetype serviceTypeId;
 
+    @Column(name = "quantity")
+    private Integer quantity;
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     public Service() {
     }
 
@@ -159,5 +170,5 @@ public class Service implements Serializable {
     public String toString() {
         return "com.app.pojo.Service[ serviceId=" + serviceId + " ]";
     }
-    
+
 }

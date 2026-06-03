@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react"; 
+import { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, Col, Container, Row, Stack } from "react-bootstrap";
 import RoomSearchBar from "../../components/RoomSearchBar";
@@ -8,15 +8,9 @@ import BackButton from "../../components/BackButton";
 
 const RoomList = () => {
     const location = useLocation();
-    const searchData = location.state || {};
     const navigate = useNavigate();
-    const [rooms, setRooms] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const limitPerPage = 9;
-    const [selectedRoom, setSelectedRoom] = useState(null);
 
+    const searchData = location.state || {};
     const [searchParams, setSearchParams] = useState({
         roomType: searchData.roomType || "Theo phòng",
         priceRange: searchData.priceRange || [500000, 5000000],
@@ -24,37 +18,109 @@ const RoomList = () => {
         checkOutDate: searchData.checkOutDate || null
     });
 
+    useEffect(() => {
+        if (location.state) {
+            setSearchParams({
+                roomType: location.state.roomType || "Theo phòng",
+                priceRange: location.state.priceRange || [500000, 5000000],
+                checkInDate: location.state.checkInDate || new Date(),
+                checkOutDate: location.state.checkOutDate || null
+            });
+            setCurrentPage(1);
+        }
+    }, [location.state]);
+
+    const [rooms, setRooms] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [selectedRoom, setSelectedRoom] = useState(null);
+
     const handleBooking = (payload) => {
         navigate('/checkout', { state: { bookingSummary: payload } });
     };
 
     useEffect(() => {
         setLoading(true);
-        const typeParam = searchParams.roomType === "Theo phòng" || searchParams.roomType === "Tất cả phòng" ? "all" : searchParams.roomType;
-        let priceParam = "all";
-        if (searchParams.priceRange[0] > 500000 || searchParams.priceRange[1] < 5000000) {
-            priceParam = `${searchParams.priceRange[0]}_${searchParams.priceRange[1]}`;
-        }
-        const checkInParam = searchParams.checkInDate ? new Date(searchParams.checkInDate).toISOString() : "";
-        const checkOutParam = searchParams.checkOutDate ? new Date(searchParams.checkOutDate).toISOString() : "";
 
-        const fetchUrl = `/api/rooms?page=${currentPage}&limit=${limitPerPage}&type=${typeParam}&price=${priceParam}&checkIn=${checkInParam}&checkOut=${checkOutParam}`;
-        
+
+        const pad = (num) => String(num).padStart(2, '0');
+        const formatBackendDate = (date) => {
+            if (!date) return "";
+            const d = new Date(date);
+            return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        };
+
+        const params = new URLSearchParams();
+        params.append("page", currentPage);
+
+        const currentCheckIn = searchParams.checkInDate || new Date();
+        params.append("checkIn", formatBackendDate(currentCheckIn));
+
+        if (searchParams.checkOutDate) {
+            params.append("checkOut", formatBackendDate(searchParams.checkOutDate));
+        }
+
+        if (searchParams.roomType === "Phòng thường") {
+            params.append("roomTypeId", 1);
+        } else if (searchParams.roomType === "Phòng VIP") {
+            params.append("roomTypeId", 2);
+        }
+
+        if (searchParams.priceRange && searchParams.priceRange.length === 2) {
+            params.append("minPrice", searchParams.priceRange[0]);
+            params.append("maxPrice", searchParams.priceRange[1]);
+        }
+
+        const fetchUrl = `http://localhost:8080/HotelManagementServer/api/rooms?${params.toString()}`;
+
+
         fetch(fetchUrl)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error("Yêu cầu lọc dữ liệu không hợp lệ.");
+                return res.json();
+            })
             .then(response => {
-                const roomData = Array.isArray(response.data) ? response.data : (Array.isArray(response) ? response : []);
-                setRooms(roomData);
-                setTotalPages(response.totalPages || 1);
-                setTimeout(() => { setLoading(false); }, 1000);
+
+                let roomList = [];
+                if (response.data && Array.isArray(response.data.rooms)) {
+                    roomList = response.data.rooms;
+                } else if (Array.isArray(response.data)) {
+                    roomList = response.data;
+                } else if (Array.isArray(response.rooms)) {
+                    roomList = response.rooms;
+                } else if (Array.isArray(response)) {
+                    roomList = response;
+                }
+
+
+                const mappedRooms = roomList.map(room => ({
+                    id: room.roomId || room.id,
+                    name: room.name || room.roomName,
+                    roomTypeName: room.roomTypeName || room.type,
+                    price: room.price,
+                    capacity: room.capacity,
+                    avatarUrl: room.thumbnail || "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",
+                    beds: room.beds || []
+                }));
+
+                setRooms(mappedRooms);
+                
+                const limitPerPage = 6; 
+                if (roomList.length >= limitPerPage) {
+                    setTotalPages(currentPage + 1); 
+                } else {
+                    setTotalPages(currentPage); 
+                }
+
+                setTimeout(() => { setLoading(false); }, 600);
             })
             .catch(error => {
-                console.error("Lỗi:", error);
+                console.error("Lỗi khi lọc dữ liệu phòng:", error);
                 setRooms([]);
                 setLoading(false);
             });
     }, [currentPage, searchParams]);
-
     const handleSearchSubmit = (newParams) => {
         setSearchParams(newParams);
         setCurrentPage(1);
@@ -103,6 +169,7 @@ const RoomList = () => {
                     />
                 </Col>
             </Row>
+
         </Container>
     );
 };

@@ -13,4 +13,5 @@ public interface UserService{
     public User createUser(UserCreateDTO userDTO);
     public User createUserForClient(ApiRegisterDTO registerDTO);
     public ListUserAdminUserPageDTO getUsers(UserSearchCriteria criteria);
+    User processGoogleUser(String email, String name);
 }

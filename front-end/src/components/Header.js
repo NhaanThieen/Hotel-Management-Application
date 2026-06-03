@@ -10,7 +10,15 @@ const Header = () => {
 
     const token = localStorage.getItem("token");
     const userStr = localStorage.getItem("user");
-    const user = userStr ? JSON.parse(userStr) : null;
+    
+    let user = null;
+    try {
+        if (userStr && userStr !== "undefined") {
+            user = JSON.parse(userStr);
+        }
+    } catch (error) {
+        console.error("Lỗi đọc dữ liệu user từ localStorage:", error);
+    }
 
     const handleLogout = () => {
         localStorage.removeItem("token");

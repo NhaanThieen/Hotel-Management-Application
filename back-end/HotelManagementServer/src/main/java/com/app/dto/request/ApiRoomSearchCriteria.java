@@ -9,11 +9,11 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 public class ApiRoomSearchCriteria {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "Ngày nhận phòng không được để trống")
     private Date checkIn;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date checkOut;
     private Integer roomTypeId;
     private Double minPrice;
@@ -117,6 +117,5 @@ public class ApiRoomSearchCriteria {
     public void setPage(Integer page) {
         this.page = page;
     }
-    
-    
+
 }

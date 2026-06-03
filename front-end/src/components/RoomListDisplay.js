@@ -34,8 +34,8 @@ const RoomListDisplay = ({
                 </Stack>
                 <Card.Body className="d-flex flex-column p-4">
                     <Card.Title as={Stack} direction="horizontal" className="text-white fw-bold mb-3 fs-4 align-items-center flex-wrap gap-2">
-                        <span>{room.name}</span>
-                        <Badge bg="warning" text="dark" className="fs-6 px-2 py-1">{room.roomName}</Badge>
+                        <span>{room.roomTypeName}</span>
+                        <Badge bg="warning" text="dark" className="fs-6 px-2 py-1">{room.name}</Badge>
                     </Card.Title>
                     <Stack direction="horizontal" className="mt-auto justify-content-between align-items-end">
                         <Stack>
@@ -59,8 +59,8 @@ const RoomListDisplay = ({
                     <Card.Body className="d-flex flex-column h-100 p-4">
                         <Stack className="mb-3">
                             <Card.Title as={Stack} direction="horizontal" className="text-white fw-bold fs-4 align-items-center mb-2 flex-wrap gap-2">
-                                <span>{room.name}</span>
-                                <Badge bg="warning" text="dark" className="fs-6 px-2 py-1">{room.roomName}</Badge>
+                                <span>{room.roomTypeName}</span>
+                                <Badge bg="warning" text="dark" className="fs-6 px-2 py-1">{room.name}</Badge>
                             </Card.Title>
                             <Card.Text as={Stack} direction="horizontal" className="text-white-50 small mb-3 align-items-center flex-wrap gap-2">
                                 <Stack direction="horizontal" className="align-items-center">

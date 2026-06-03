@@ -1,11 +1,11 @@
 // Cấu hình những gì liên quan tới web
 package com.app.configs;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -16,8 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 // Đi vào từng file trong package để khởi tạo các Bean (Có annotation), sau đó bỏ vào Container
 @ComponentScan(
         basePackages = {
-            "com.app.controllers",
-        }
+            "com.app.controllers",}
 )
 // Hiện thực cấu hình mặc định của interface WebMvcConfigurer. Cần sửa cái nào thì ghi đè
 @EnableWebMvc
@@ -31,7 +30,7 @@ public class WebAppContextConfig implements WebMvcConfigurer {
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
-    
+
     // Spring MVC thuần thì File tĩnh được cấu hình không nằm ở trong folder resources. Nên cần phải cấu hình
     // lại cho trỏ về resources.
     @Override
@@ -42,10 +41,19 @@ public class WebAppContextConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/js/**")
                 .addResourceLocations("classpath:/static/js/");
     }
-    
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:3000", "http://localhost:5173") // Cho phép React (3000) hoặc Vite (5173) truy cập
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Cho phép các hàm HTTP này
+                .allowedHeaders("*") // Cho phép tất cả các header
+                .allowCredentials(true); // Cho phép gửi token chéo domain
+    }
+
     // Do request gửi lên là form đã được mã hóa để gửi file. Nên cần đối tượng này để giải mã (nếu không mọi dữ liệu sẽ là null).
     @Bean
-    public StandardServletMultipartResolver multipartResolver(){
+    public StandardServletMultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
 }

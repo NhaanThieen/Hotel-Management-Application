@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button, Form, Stack, Row, Col } from "react-bootstrap";
 import toast from "react-hot-toast";
 
-const ReviewModal = ({ show, onHide, bookingInfo }) => {
+const FeedbackModal = ({ show, onHide, bookingInfo, onSuccess }) => {
     const [ratings, setRatings] = useState({
         reception: 5,
         foodAndDrink: 5,
@@ -32,27 +32,49 @@ const ReviewModal = ({ show, onHide, bookingInfo }) => {
         );
     };
 
+    const getUsername = () => {
+        let userStr = localStorage.getItem("user");
+        if (!userStr) return null;
+        try {
+            const userObj = JSON.parse(userStr);
+            return userObj.username || userObj.userName || userObj; 
+        } catch (e) { 
+            return userStr.replace(/^["']|["']$/g, ''); 
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
+        const token = localStorage.getItem("token");
+
         const payload = {
             bookingId: bookingInfo?.id || null,
+            userName: getUsername(), 
             ratings,
             tags: selectedTags,
             comment
         };
 
         try {
-            const res = await fetch("/api/reviews", {
+            const res = await fetch("/HotelManagementServer/api/secure/feedbacks", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` 
+                },
                 body: JSON.stringify(payload)
             });
             
             if (!res.ok) throw new Error("Lỗi khi gửi đánh giá");
 
             toast.success("Cảm ơn bạn đã đánh giá! Trải nghiệm của bạn rất quý giá với chúng tôi.");
+            setComment("");
+            setSelectedTags([]);
+
+            if (onSuccess) onSuccess();
+
             onHide(); 
         } catch (error) {
             toast.error(error.message || "Xảy ra sự cố, vui lòng thử lại sau.");
@@ -140,7 +162,7 @@ const ReviewModal = ({ show, onHide, bookingInfo }) => {
                     </Row>
 
                     <Form.Group className="mb-4">
-                        <Form.Label className="text-white fw-bold">Thêm đánh giá</Form.Label>
+                        <Form.Label className="text-white fw-bold">Thêm ý kiến (Tùy chọn)</Form.Label>
                         <Form.Control 
                             as="textarea" 
                             rows={3} 
@@ -169,4 +191,4 @@ const ReviewModal = ({ show, onHide, bookingInfo }) => {
     );
 };
 
-export default ReviewModal;
+export default FeedbackModal;
