@@ -47,6 +47,14 @@ public class UserServiceImpl implements UserService {
         if (userDTO == null) {
             throw new IllegalArgumentException("Dữ liệu gửi lên không được NULL");
         }
+
+        if (userDTO.getEmail() != null && userDTO.getEmail().trim().isEmpty()) {
+            userDTO.setEmail(null);
+        }
+        if (userDTO.getPhone() != null && userDTO.getPhone().trim().isEmpty()) {
+            userDTO.setPhone(null);
+        }
+        
         // Do các trường này dưới db là unique nên cần kiểm tra
         if (this.userRepository.getUserByUsername(userDTO.getUserName()) != null) {
             throw new IllegalArgumentException("Tên đăng nhập '" + userDTO.getUserName() + "' đã tồn tại!");
@@ -146,25 +154,24 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User processGoogleUser(String email, String name) {
-        User existingUser = this.userRepository.getUserByEmail(email); 
+        User existingUser = this.userRepository.getUserByEmail(email);
 
         if (existingUser != null) {
-            return existingUser; 
+            return existingUser;
         }
 
         User newUser = new User();
-        newUser.setUsername(email); 
-        newUser.setEmail(email); 
+        newUser.setUsername(email);
+        newUser.setEmail(email);
         newUser.setName(name);
-        newUser.setPhone(""); 
-        newUser.setIsDeleted((short) 0); 
-        Role customerRole = new Role(3); 
+        newUser.setPhone("");
+        newUser.setIsDeleted((short) 0);
+        Role customerRole = new Role(3);
         newUser.setRoleId(customerRole);
 
-        
         newUser.setPassword(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder()
                 .encode(java.util.UUID.randomUUID().toString()));
 
-        return this.userRepository.createUser(newUser); 
+        return this.userRepository.createUser(newUser);
     }
 }

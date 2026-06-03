@@ -83,7 +83,7 @@ public class SpringSecurityConfig {
         http.csrf(c -> c.disable())
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
-                .requestMatchers("/", "/admin/**").hasAnyRole("ADMIN")
+                .requestMatchers("/", "/admin/**").hasAnyRole("ADMIN", "RECEPTIONIST")
                 .anyRequest().authenticated())
                 .formLogin(form -> form
                 .loginPage("/admin/login/") // URL tới trang login

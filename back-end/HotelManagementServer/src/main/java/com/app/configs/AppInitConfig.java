@@ -1,5 +1,6 @@
 package com.app.configs;
 
+import com.app.services.servicesImpl.SidebarService;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -17,7 +18,6 @@ public class AppInitConfig extends AbstractAnnotationConfigDispatcherServletInit
             RootAppContextConfig.class,
             ThymeleafConfig.class,
             HibernateConfig.class,
-            SidebarConfig.class,
             SpringSecurityConfig.class
         };
     }

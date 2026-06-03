@@ -1,4 +1,4 @@
-package com.app.configs;
+package com.app.services.servicesImpl;
 
 import com.app.properties.SidebarGroupProperties;
 import com.app.properties.SidebarItemProperties;
@@ -11,27 +11,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.stereotype.Service;
 
-@Configuration
-public class SidebarConfig {
+@Service
+public class SidebarService {
 
-    @Bean
-    public List<SidebarGroupProperties> getFuction() {
+    public List<SidebarGroupProperties> getSidebarByRole(String role) {
+        String fileName = "sidebar_" + role.toLowerCase() + ".properties";
         Map<String, SidebarGroupProperties> groupMap = new LinkedHashMap<>();
         Properties props = new Properties();
-        List<String> orderedKeys = new ArrayList<>(); 
+        List<String> orderedKeys = new ArrayList<>();
 
         try {
-            ClassPathResource resource = new ClassPathResource("SidebarFunctions_vi.properties");
-            
-            // Nạp thuộc tính để xử lý Unicode tự động
+            ClassPathResource resource = new ClassPathResource(fileName);
+            if (!resource.exists()) {
+                return new ArrayList<>();
+            }
+
             props = PropertiesLoaderUtils.loadProperties(resource);
-            
-            // Đọc tuần tự để lấy đúng thứ tự các Key từ trên xuống dưới
+
             try (BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -70,7 +70,7 @@ public class SidebarConfig {
                 } else {
                     groupMap.put(groupName, new SidebarGroupProperties(name, id, icon));
                 }
-            
+
             } else if (menuKey.startsWith("sidebar.item.")) {
                 String remaining = menuKey.substring("sidebar.item.".length());
                 String groupName = remaining.split("\\.")[0];
