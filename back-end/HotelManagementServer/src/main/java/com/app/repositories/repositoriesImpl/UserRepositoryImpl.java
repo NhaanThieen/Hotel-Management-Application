@@ -109,7 +109,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User getUserById(Integer id) {
         Session session = this.sessionFactory.getCurrentSession();
         Query<User> query = session.createQuery("FROM User WHERE userId=:id", User.class);
-        query.setParameter("userId", id);
+        query.setParameter("id", id);
         return query.getSingleResultOrNull();
     }
 }

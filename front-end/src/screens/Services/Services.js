@@ -83,7 +83,7 @@ const Services = () => {
                     serviceId: selectedService.serviceId,
                     serviceName: selectedService.name,
                     price: selectedService.price,
-                    quantity: 1
+                    stock: 1
                 })
             });
             

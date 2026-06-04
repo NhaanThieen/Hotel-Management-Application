@@ -9,4 +9,5 @@ import com.app.pojo.Roombooking;
 
 public interface RoomBookingRepository {
     public Roombooking saveRoomBooking(Roombooking roomBooking);
+    Roombooking getRoomBookingById(Integer id);
 }

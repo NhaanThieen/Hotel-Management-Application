@@ -142,7 +142,7 @@ public class ApiBookingServiceImpl extends AbstractBookingProcess implements Roo
                 expectedTotal = expectedTotal.subtract(discountMoney).max(BigDecimal.ZERO);
             }
         }
-        
+
         return new BigDecimal[]{expectedTotal, discountMoney};
     }
 
@@ -209,7 +209,7 @@ public class ApiBookingServiceImpl extends AbstractBookingProcess implements Roo
         if (rbs == null) {
             throw new IllegalArgumentException("Hệ thống không có roombookingstatus Pending");
         }
-        
+
         if (payment == null) {
             throw new IllegalArgumentException("Hệ thống không có payment method");
         }
@@ -276,6 +276,6 @@ public class ApiBookingServiceImpl extends AbstractBookingProcess implements Roo
 
     @Override
     protected String executePayment(Roombooking booking, Integer paymentMethodId) {
-        return "";
+        return String.valueOf(booking.getRoomBookingId());
     }
 }
